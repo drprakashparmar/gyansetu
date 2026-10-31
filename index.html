@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="GYANSETU (ज्ञानसेतु) – AI-powered career transformation: career matching, skill-gap analysis, learning paths, mock interviews and resume builder in Marathi, Hindi and English.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>GYANSETU Learner Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@500;700;800&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans:wght@400;600&display=swap">
+</head>
+<body>
+<style>
+/* Layout: app shell — left sidebar nav + top bar; dashboard = KPI row then two-column card grid */
+:root{
+  --bg:#F3F5FA; --surface:#FFFFFF; --ink:#16192B; --muted:#5A607A; --line:#DFE2EC;
+  --indigo:#1F3A93; --indigo-soft:#E8ECF8; --nav:#14245E; --nav-ink:#C9D3F5;
+  --saffron:#E07A12; --saffron-soft:#FDF0E1; --green:#138A4B; --green-soft:#E3F4EA;
+  --amber:#A86400; --amber-soft:#FBF0DC; --ai:#EEF1FB; --focus:#E07A12;
+  --paper:#FFFFFF; --paper-ink:#111111; --paper-muted:#4A4A4A; --paper-accent:#1F3A93; --paper-rule:#9A9A9A;
+  --f-display:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
+  --f-body:"Noto Sans","Noto Sans Devanagari",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1120; --surface:#171B2D; --ink:#E9EBF5; --muted:#A3A9C4; --line:#2A3050;
+  --indigo:#8FA6F0; --indigo-soft:#222A4A; --nav:#0A0D1A; --nav-ink:#A9B4DA;
+  --saffron:#F4A04A; --saffron-soft:#3A2A16; --green:#4CC78A; --green-soft:#16301F;
+  --amber:#E8B04A; --amber-soft:#352A12; --ai:#1E2440; --focus:#F4A04A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1120; --surface:#171B2D; --ink:#E9EBF5; --muted:#A3A9C4; --line:#2A3050;
+  --indigo:#8FA6F0; --indigo-soft:#222A4A; --nav:#0A0D1A; --nav-ink:#A9B4DA;
+  --saffron:#F4A04A; --saffron-soft:#3A2A16; --green:#4CC78A; --green-soft:#16301F;
+  --amber:#E8B04A; --amber-soft:#352A12; --ai:#1E2440; --focus:#F4A04A; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.5}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.2}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:var(--indigo)}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--nav);color:var(--nav-ink);padding:22px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;
+  padding-left:max(14px,env(safe-area-inset-left,0px))}
+.logo{padding:0 8px}
+.logo b{font-family:var(--f-display);font-size:22px;color:#fff;letter-spacing:.5px;display:block}
+.logo span{font-family:var(--f-display);color:#F4A04A;font-size:18px;font-weight:700}
+.logo small{display:block;font-size:11px;color:var(--nav-ink);margin-top:2px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;border:0;background:none;color:var(--nav-ink);padding:9px 10px;border-radius:8px;cursor:pointer;text-align:left;font-size:14px}
+.nav button svg{width:18px;height:18px;flex:0 0 18px}
+.nav button:hover{background:rgba(255,255,255,.06)}
+.nav button[aria-current="page"]{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+.side-foot{margin-top:auto;font-size:11.5px;line-height:1.45;padding:0 8px;color:var(--nav-ink)}
+.main{min-width:0;padding-right:max(24px,env(safe-area-inset-right,0px));padding-left:24px;padding-block:0 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:16px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.who{display:flex;align-items:center;gap:10px;min-width:0;max-width:100%}
+.who>div{min-width:0}
+#whoSel{max-width:100%;width:100%}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--indigo-soft);color:var(--indigo);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:17px}
+.who label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block}
+select{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface)}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:none;padding:6px 13px;cursor:pointer;font-size:13.5px}
+.lang button[aria-pressed="true"]{background:var(--indigo);color:var(--surface)}
+.demo-pill{font-size:11.5px;color:var(--amber);background:var(--amber-soft);border-radius:999px;padding:4px 10px}
+.pagehead{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-size:28px;font-weight:700}
+.pagehead p{margin:4px 0 0;color:var(--muted)}
+.goal{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.goal label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block}
+.goal select{font-weight:600;border:0;padding:0;background:transparent;font-family:var(--f-display);font-size:16px;color:var(--indigo)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;min-width:0}
+.kpi .lab{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kpi .num{font-family:var(--f-display);font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .sub{font-size:12.5px;color:var(--muted)}
+.dash{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1100px){.dash{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+.card-h h3{font-size:17px}
+.linkbtn{border:0;background:none;color:var(--indigo);cursor:pointer;font-size:13px;font-weight:600;padding:0}
+.badge{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.b-self{background:var(--bg);color:var(--muted)}
+.b-ver{background:var(--green-soft);color:var(--green);border-color:transparent}
+.b-gap{background:var(--amber-soft);color:var(--amber);border-color:transparent}
+.b-ess{background:var(--indigo-soft);color:var(--indigo);border-color:transparent}
+.b-act{background:var(--saffron-soft);color:var(--saffron);border-color:transparent}
+.btn{border:1px solid var(--indigo);background:var(--indigo);color:var(--surface);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn.ghost{background:transparent;color:var(--indigo)}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)} .note{font-size:12.5px;color:var(--muted)}
+.banner{background:var(--saffron-soft);border-radius:10px;padding:10px 14px;font-size:13.5px}
+.ai{background:var(--ai);border-radius:10px;padding:12px 14px;font-size:14px}
+.ai .lab{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo);font-weight:700;display:block;margin-bottom:4px}
+.formula{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--bg);border-radius:8px;padding:8px 12px;overflow-x:auto;white-space:pre}
+/* mini gap list */
+.mg{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 64px;gap:10px;align-items:center;padding-block:7px;border-bottom:1px dashed var(--line);font-size:13.5px}
+.mg:last-child{border-bottom:0}
+.mg .nm small{display:block;font-size:11.5px;color:var(--muted)}
+.scale{position:relative;height:14px;background:var(--bg);border-radius:5px;border:1px solid var(--line)}
+.scale.lg{height:22px}
+.scale .cur{position:absolute;left:0;top:0;bottom:0;background:var(--indigo);border-radius:4px 0 0 4px;opacity:.85}
+.scale .gp{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,var(--amber-soft) 0 6px,transparent 6px 10px);border:1px dashed var(--amber)}
+.scale .tgt{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--saffron);border-radius:2px}
+.scale .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.mg .v{text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+/* path */
+.path{display:flex;flex-direction:column}
+.ps{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;padding-block:8px;position:relative}
+.ps .dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--bg);border:1px solid var(--line);color:var(--muted);position:relative;z-index:1}
+.ps.done .dot{background:var(--green);border-color:var(--green);color:#fff}
+.ps.active .dot{background:var(--saffron);border-color:var(--saffron);color:#fff}
+.ps:not(:last-child)::before{content:"";position:absolute;left:13px;top:34px;bottom:-8px;width:2px;background:var(--line)}
+.ps h4{font-size:15px;font-family:var(--f-body);font-weight:600}
+.ps .note{margin-top:1px}
+.res{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.res a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:4px 9px;background:var(--bg)}
+.res a small{color:var(--muted)}
+/* matches */
+.mm{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:8px;align-items:center;padding-block:8px;border-bottom:1px dashed var(--line)}
+.mm:last-child{border-bottom:0}
+.mm b{font-family:var(--f-display);font-size:15px}
+.mm .fit{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--indigo);text-align:right;font-variant-numeric:tabular-nums}
+.meter{height:6px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;background:var(--indigo)}
+/* full career cards */
+.cards{display:flex;flex-direction:column;gap:12px}
+.ccard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.ccard.sel{border-color:var(--indigo);box-shadow:inset 0 0 0 1px var(--indigo)}
+.ccard .top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.ccard h4{font-size:19px}
+.ccard .rank{color:var(--saffron);font-weight:800;margin-right:6px}
+.fitnum{font-family:var(--f-display);font-size:24px;font-weight:800;color:var(--indigo);font-variant-numeric:tabular-nums}
+.fitnum small{font-size:12px;color:var(--muted);font-weight:500;margin-left:4px}
+.comp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.comp{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.comp div{font-size:11.5px;color:var(--muted)}
+.reasons{display:flex;flex-wrap:wrap;gap:6px}
+.reasons span{font-size:12.5px;background:var(--green-soft);color:var(--green);padding:3px 9px;border-radius:999px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(110px,180px) minmax(0,1fr) 40px;gap:10px;align-items:center;font-size:13.5px}
+.bar .track{height:9px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;background:var(--indigo)}
+.bar .val{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kv div{background:var(--bg);border-radius:10px;padding:10px 12px}
+.kv b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.log{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.log div{background:var(--green-soft);color:var(--green);border-radius:8px;padding:6px 10px}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:10px;max-width:760px}
+.msg{padding:10px 14px;border-radius:12px;max-width:90%;font-size:14px}
+.msg.u{align-self:flex-end;background:var(--indigo);color:var(--surface)}
+.msg.a{align-self:flex-start;background:var(--ai)}
+.msg.a .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo);font-weight:700;display:block;margin-bottom:3px}
+.msg .src{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px}
+.chips button:hover{border-color:var(--indigo)}
+/* own form */
+fieldset{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 14px;background:var(--surface)}
+legend{font-weight:600;padding:0 6px;font-family:var(--f-display);font-size:16px}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding-block:6px;border-bottom:1px dashed var(--line);font-size:14px}
+.q:last-child{border-bottom:0}
+@media (max-width:640px){.q{grid-template-columns:minmax(0,1fr)}}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg label{padding:5px 10px;font-size:13px;cursor:pointer;border-right:1px solid var(--line)}
+.seg label:last-child{border-right:0}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--indigo);color:var(--surface)}
+.seg label:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:-2px}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer}
+.checks label:has(input:checked){border-color:var(--indigo);background:var(--indigo-soft)}
+input[type=range]{width:200px;max-width:100%;accent-color:var(--indigo)}
+/* toolkit */
+.pq-grid{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:16px;align-items:start}
+.pq-skills{display:flex;flex-direction:column;gap:6px;max-height:540px;overflow:auto}
+.pq-skill{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px;color:var(--ink)}
+.pq-skill.on{border-color:var(--indigo);box-shadow:inset 0 0 0 1px var(--indigo);background:var(--indigo-soft)}
+.pq-q{font-size:17px;font-weight:600;margin:4px 0 12px}
+.pq-opts{display:flex;flex-direction:column;gap:8px}
+.pq-opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14px;color:var(--ink)}
+.pq-opt span{font-weight:700;color:var(--indigo);min-width:16px}
+.pq-opt.sel{border-color:var(--indigo);background:var(--indigo-soft)}
+.pq-opt.ok{border-color:var(--green);background:var(--green-soft)}
+.pq-opt.bad{border-color:var(--amber);background:var(--amber-soft)}
+.pq-opt:disabled{cursor:default}
+.big{font-family:var(--f-display);font-size:34px;font-weight:800;color:var(--indigo);font-variant-numeric:tabular-nums}
+.fb{align-self:flex-end;max-width:90%;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:4px}
+.stars{color:var(--saffron);letter-spacing:2px}
+.iv-input{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+textarea,input:not([type]){width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface);font:inherit;color:var(--ink);resize:vertical}
+.res-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.fld{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fld label{font-size:12px;color:var(--muted);font-weight:600}
+.fld2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.cv{background:var(--paper);color:var(--paper-ink);border:1px solid var(--line);border-radius:8px;padding:22px 24px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.45}
+.cv h1{font-family:Arial,Helvetica,sans-serif;font-size:22px;margin:0}
+.cv h2{font-family:Arial,Helvetica,sans-serif;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--paper-rule);padding-bottom:3px;margin:14px 0 6px;color:var(--paper-accent)}
+.cv ul{margin:4px 0;padding-left:18px}.cv p{margin:4px 0}.cv-c{color:var(--paper-muted)}.cv-r{color:var(--paper-accent);font-weight:700;margin-top:2px}.cv-f{color:var(--paper-muted);font-size:11px;margin-top:14px}
+.checks-list{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.tk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tk button{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);text-align:left}
+.tk button svg{width:20px;height:20px;color:var(--indigo)}
+.tk button:hover{border-color:var(--indigo)}
+@media (max-width:900px){.pq-grid,.res-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.fld2{grid-template-columns:minmax(0,1fr)}.tk{grid-template-columns:minmax(0,1fr)}}
+/* mobile */
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:sticky;top:0;height:auto;z-index:5;padding:10px max(16px,env(safe-area-inset-left,0px)) 8px;padding-right:max(16px,env(safe-area-inset-right,0px));gap:8px;
+    padding-top:calc(10px + env(safe-area-inset-top,0px))}
+  .logo small,.side-foot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;scrollbar-width:none}
+  .nav button{flex:0 0 auto;padding:7px 10px;font-size:13px}
+  .main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .kpis{grid-template-columns:minmax(0,1fr)}
+  .mg{grid-template-columns:minmax(0,1fr) 56px}.mg .scale{grid-column:1/-1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){.fill,.meter i,.scale .cur,.ring-fg{transition:all .5s ease}}
+</style>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><b>GYANSETU</b><span>ज्ञानसेतु</span><small id="tag"></small></div>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+    <div class="side-foot" id="sidefoot"></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="who"><div class="avatar" id="avatar"></div>
+        <div><label for="whoSel" id="whoLbl"></label><select id="whoSel"></select></div></div>
+      <div class="tools"><span class="demo-pill" id="demopill"></span>
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" data-lang="en" id="lang-en">English</button>
+          <button type="button" data-lang="mr" id="lang-mr">मराठी</button>
+          <button type="button" data-lang="hi" id="lang-hi">हिंदी</button>
+        </div></div>
+    </div>
+    <div id="view" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+// ENGINE START
+const SK = {
+  SQL:{h:20,cat:'tech',n:["SQL & databases","SQL व डेटाबेस","SQL और डेटाबेस"]},
+  EXCEL:{h:15,cat:'tech',n:["Excel & spreadsheets","एक्सेल व स्प्रेडशीट","एक्सेल और स्प्रेडशीट"]},
+  PBI:{h:20,cat:'tech',pre:[["EXCEL",2],["SQL",2],["STATS",1],["CLEAN",1]],n:["Data visualisation / Power BI","डेटा व्हिज्युअलायझेशन / Power BI","डेटा विज़ुअलाइज़ेशन / Power BI"]},
+  STATS:{h:20,cat:'tech',n:["Statistics fundamentals","सांख्यिकीची मूलतत्त्वे","सांख्यिकी के मूल सिद्धांत"]},
+  CLEAN:{h:15,cat:'tech',pre:[["EXCEL",2],["PY",1]],n:["Data cleaning","डेटा स्वच्छता (क्लीनिंग)","डेटा क्लीनिंग"]},
+  COMM:{h:15,cat:'soft',n:["Communication","संवाद कौशल्य","संवाद कौशल"]},
+  BIZ:{h:10,cat:'soft',n:["Business metrics basics","व्यवसाय मापदंडांची ओळख","व्यावसायिक मापदंडों की समझ"]},
+  PY:{h:25,cat:'tech',n:["Python (pandas)","Python (pandas)","Python (pandas)"]},
+  GIT:{h:10,cat:'tech',n:["Git & version control","Git व व्हर्जन कंट्रोल","Git और वर्ज़न कंट्रोल"]},
+  WEB:{h:25,cat:'tech',pre:[["PY",2]],n:["Web APIs & backend basics","वेब API व बॅकएंड मूलतत्त्वे","वेब API और बैकएंड की मूल बातें"]},
+  DSA:{h:30,cat:'tech',pre:[["PY",2]],n:["Problem solving & data structures","समस्या सोडवणे व डेटा स्ट्रक्चर्स","समस्या समाधान और डेटा संरचनाएँ"]},
+  DMK:{h:20,cat:'soft',n:["Digital marketing tools","डिजिटल मार्केटिंग साधने","डिजिटल मार्केटिंग टूल्स"]},
+  CONTENT:{h:15,cat:'soft',n:["Content writing","मजकूर लेखन","कंटेंट लेखन"]},
+  WANALYTICS:{h:15,cat:'tech',pre:[["EXCEL",1]],n:["Web & campaign analytics","वेब व मोहीम विश्लेषण","वेब और अभियान विश्लेषण"]},
+  DESIGN:{h:20,cat:'creative',n:["Visual design principles","दृश्य रचनेची तत्त्वे","दृश्य डिज़ाइन के सिद्धांत"]},
+  GDTOOLS:{h:25,cat:'creative',pre:[["DESIGN",1]],n:["Design software","डिझाइन सॉफ्टवेअर","डिज़ाइन सॉफ़्टवेयर"]},
+  WIRING:{h:30,cat:'voc',pre:[["ESAFETY",2]],n:["Electrical wiring & installation","विद्युत वायरिंग व जोडणी","बिजली वायरिंग और इंस्टॉलेशन"]},
+  ESAFETY:{h:10,cat:'voc',n:["Electrical safety","विद्युत सुरक्षा","विद्युत सुरक्षा"]},
+  DRAW:{h:15,cat:'voc',n:["Reading technical drawings","तांत्रिक आराखडे वाचणे","तकनीकी ड्रॉइंग पढ़ना"]},
+  TOOLS:{h:15,cat:'voc',n:["Testing & measuring instruments","चाचणी व मापन उपकरणे","परीक्षण और मापन उपकरण"]},
+  CUST:{h:10,cat:'soft',n:["Customer handling","ग्राहक सेवा","ग्राहक सेवा"]},
+  CNCPROG:{h:30,cat:'voc',pre:[["DRAW",2],["MEASURE",2]],n:["CNC setup & programming","CNC सेटअप व प्रोग्रामिंग","CNC सेटअप और प्रोग्रामिंग"]},
+  MEASURE:{h:15,cat:'voc',n:["Precision measurement","अचूक मापन","सटीक मापन"]},
+  WSAFE:{h:10,cat:'voc',n:["Workshop safety","कार्यशाळा सुरक्षा","कार्यशाला सुरक्षा"]},
+  BANKOPS:{h:20,cat:'bank',n:["Banking products & operations","बँकिंग उत्पादने व कामकाज","बैंकिंग उत्पाद और संचालन"]},
+  KYC:{h:15,cat:'bank',pre:[["BANKOPS",1]],n:["KYC & compliance basics","KYC व अनुपालन मूलतत्त्वे","KYC और अनुपालन की मूल बातें"]},
+  DIGI:{h:10,cat:'digi',n:["Digital literacy & office software","डिजिटल साक्षरता व ऑफिस सॉफ्टवेअर","डिजिटल साक्षरता और ऑफ़िस सॉफ़्टवेयर"]},
+  PATIENT:{h:25,cat:'health',pre:[["HYGIENE",2]],n:["Patient care routines","रुग्णसेवा दिनक्रम","रोगी देखभाल दिनचर्या"]},
+  HYGIENE:{h:15,cat:'health',n:["Hygiene & infection control","स्वच्छता व संसर्ग नियंत्रण","स्वच्छता और संक्रमण नियंत्रण"]},
+  FIRSTAID:{h:15,cat:'health',n:["First aid & vital signs","प्रथमोपचार व जीवनचिन्हे","प्राथमिक चिकित्सा और जीवन संकेत"]},
+  RECORDS:{h:10,cat:'health',n:["Health records","आरोग्य नोंदी","स्वास्थ्य रिकॉर्ड"]},
+  AGRI:{h:20,cat:'agri',n:["Crop & soil basics","पीक व माती मूलतत्त्वे","फसल और मिट्टी की मूल बातें"]},
+  AGRITECH:{h:20,cat:'agri',pre:[["DIGI",2]],n:["Agri-tech tools (sensors, apps)","कृषी तंत्रज्ञान साधने (सेन्सर, अ‍ॅप)","कृषि-तकनीक उपकरण (सेंसर, ऐप)"]},
+  SALES:{h:20,cat:'soft',n:["Sales & lead generation","विक्री व ग्राहक शोध","बिक्री और लीड जनरेशन"]},
+  NEGOT:{h:15,cat:'soft',pre:[["COMM",2]],n:["Negotiation","वाटाघाटी","वार्ता कौशल"]}
+};
+const QUAL = {
+  CLASS10:{lvl:'10',n:["Class 10","इयत्ता 10वी","कक्षा 10"]},
+  C12SCI:{lvl:'12',sci:1,n:["Class 12 Science","इयत्ता 12वी विज्ञान","कक्षा 12 विज्ञान"]},
+  C12COM:{lvl:'12',n:["Class 12 Commerce","इयत्ता 12वी वाणिज्य","कक्षा 12 वाणिज्य"]},
+  C12ARTS:{lvl:'12',n:["Class 12 Arts","इयत्ता 12वी कला","कक्षा 12 कला"]},
+  ITI_ELEC:{lvl:'iti',elec:1,n:["ITI Electrician","ITI इलेक्ट्रिशियन","ITI इलेक्ट्रीशियन"]},
+  ITI_FIT:{lvl:'iti',n:["ITI Fitter / Machinist","ITI फिटर / मशिनिस्ट","ITI फिटर / मशीनिस्ट"]},
+  DIP_ENGG:{lvl:'dip',tech:1,n:["Diploma in Engineering","अभियांत्रिकी पदविका","इंजीनियरिंग डिप्लोमा"]},
+  BSC_CS:{lvl:'ug',sci:1,tech:1,n:["B.Sc. Computer Science","बी.एस्सी. संगणक शास्त्र","बी.एससी. कंप्यूटर साइंस"]},
+  BSC:{lvl:'ug',sci:1,n:["B.Sc. (other)","बी.एस्सी. (इतर)","बी.एससी. (अन्य)"]},
+  BCOM:{lvl:'ug',n:["B.Com","बी.कॉम","बी.कॉम"]},
+  BA:{lvl:'ug',n:["B.A.","बी.ए.","बी.ए."]},
+  BE:{lvl:'ug',sci:1,tech:1,n:["B.E. / B.Tech","बी.ई. / बी.टेक","बी.ई. / बी.टेक"]}
+};
+const isUG=q=>q.lvl==='ug', c12p=q=>['12','dip','ug'].includes(q.lvl);
+const ELIG = {
+  ug:{f:q=>isUG(q),n:["Any graduate degree","कोणतीही पदवी","कोई भी स्नातक डिग्री"]},
+  ugSci:{f:q=>(isUG(q)&&(q.sci||q.tech))||(q.lvl==='dip'&&q.tech),n:["Graduate in science/IT, or engineering diploma","विज्ञान/IT पदवी किंवा अभियांत्रिकी पदविका","विज्ञान/IT स्नातक या इंजीनियरिंग डिप्लोमा"]},
+  c12:{f:q=>c12p(q),n:["Class 12 (any stream) or diploma","इयत्ता 12वी (कोणतीही शाखा) किंवा पदविका","कक्षा 12 (कोई भी संकाय) या डिप्लोमा"]},
+  ele:{f:q=>!!q.elec||q.lvl==='dip',n:["ITI Electrician or engineering diploma","ITI इलेक्ट्रिशियन किंवा अभियांत्रिकी पदविका","ITI इलेक्ट्रीशियन या इंजीनियरिंग डिप्लोमा"]},
+  cnc:{f:q=>q.lvl==='iti'||q.lvl==='dip',n:["ITI (engineering trade) or engineering diploma","ITI (अभियांत्रिकी ट्रेड) किंवा अभियांत्रिकी पदविका","ITI (इंजीनियरिंग ट्रेड) या इंजीनियरिंग डिप्लोमा"]},
+  sci12:{f:q=>!!q.sci&&c12p(q),n:["Class 12 Science or above","इयत्ता 12वी विज्ञान किंवा पुढील","कक्षा 12 विज्ञान या उससे ऊपर"]},
+  ata:{f:q=>c12p(q)||q.lvl==='iti',n:["Class 12, ITI or diploma","इयत्ता 12वी, ITI किंवा पदविका","कक्षा 12, ITI या डिप्लोमा"]}
+};
+// interest order R I A S E C ; aptitude num verb log spat
+const CAREERS = [
+ {id:'DA',elig:'ug',tags:['office'],int:[.2,.9,.2,.3,.4,.8],apt:{num:.65,log:.65,verb:.5},
+  req:[['SQL',4,3],['EXCEL',4,3],['PBI',3,3],['STATS',3,3],['CLEAN',3,2],['COMM',3,2],['BIZ',2,1],['PY',3,2]],
+  n:["Data Analyst","डेटा अ‍ॅनालिस्ट","डेटा एनालिस्ट"],
+  d:["Turns data into reports and dashboards that help organisations decide.","डेटाचे अहवाल व डॅशबोर्ड बनवून संस्थांना निर्णय घेण्यास मदत करतो.","डेटा से रिपोर्ट और डैशबोर्ड बनाकर संगठनों को निर्णय लेने में मदद करता है।"],
+  cap:["District school-enrolment dashboard in Power BI","Power BI मध्ये जिल्हा शाळा-प्रवेश डॅशबोर्ड","Power BI में ज़िला स्कूल-नामांकन डैशबोर्ड"]},
+ {id:'PYD',elig:'ugSci',tags:['office'],int:[.4,.9,.4,.2,.3,.6],apt:{log:.7,num:.55},
+  req:[['PY',4,3],['DSA',3,3],['WEB',3,3],['SQL',3,2],['GIT',3,2],['COMM',2,1]],
+  n:["Python Developer","पायथन डेव्हलपर","पायथन डेवलपर"],
+  d:["Builds and maintains software and web services in Python.","Python मध्ये सॉफ्टवेअर व वेब सेवा तयार करतो व सांभाळतो.","Python में सॉफ़्टवेयर और वेब सेवाएँ बनाता और सँभालता है।"],
+  cap:["REST API for a college library","महाविद्यालय ग्रंथालयासाठी REST API","कॉलेज लाइब्रेरी के लिए REST API"]},
+ {id:'DME',elig:'c12',tags:['office','creative'],int:[.1,.3,.8,.5,.9,.4],apt:{verb:.6},
+  req:[['DMK',4,3],['CONTENT',3,3],['WANALYTICS',3,2],['COMM',3,2],['DESIGN',2,1],['EXCEL',2,1]],
+  n:["Digital Marketing Executive","डिजिटल मार्केटिंग एक्झिक्युटिव्ह","डिजिटल मार्केटिंग एग्ज़ीक्यूटिव"],
+  d:["Plans and runs online campaigns for businesses and organisations.","व्यवसाय व संस्थांसाठी ऑनलाइन मोहिमा आखतो व चालवतो.","व्यवसायों और संस्थाओं के लिए ऑनलाइन अभियान बनाता और चलाता है।"],
+  cap:["Social media campaign for a local self-help group product","स्थानिक बचत गटाच्या उत्पादनासाठी सोशल मीडिया मोहीम","स्थानीय स्वयं सहायता समूह के उत्पाद के लिए सोशल मीडिया अभियान"]},
+ {id:'ELE',elig:'ele',tags:['field','hands'],int:[.95,.4,.1,.3,.2,.5],apt:{spat:.55,num:.45},
+  req:[['WIRING',4,3],['ESAFETY',4,3],['TOOLS',3,3],['DRAW',3,2],['CUST',2,1],['COMM',2,1]],
+  n:["Electrician","इलेक्ट्रिशियन","इलेक्ट्रीशियन"],
+  d:["Installs, tests and repairs electrical wiring and equipment safely.","विद्युत वायरिंग व उपकरणे सुरक्षितपणे बसवतो, तपासतो व दुरुस्त करतो.","बिजली की वायरिंग और उपकरण सुरक्षित रूप से लगाता, जाँचता और ठीक करता है।"],
+  cap:["Domestic wiring layout with safety checklist","सुरक्षा तपासणी सूचीसह घरगुती वायरिंग आराखडा","सुरक्षा चेकलिस्ट के साथ घरेलू वायरिंग लेआउट"]},
+ {id:'CNC',elig:'cnc',tags:['hands'],int:[.95,.5,.1,.1,.2,.6],apt:{spat:.6,num:.5},
+  req:[['CNCPROG',3,3],['MEASURE',3,3],['WSAFE',3,3],['DRAW',3,2],['COMM',2,1]],
+  n:["CNC Operator","CNC ऑपरेटर","CNC ऑपरेटर"],
+  d:["Sets up and runs computer-controlled machines that make precise parts.","अचूक भाग बनवणारी संगणक-नियंत्रित यंत्रे सेट करतो व चालवतो.","सटीक पुर्ज़े बनाने वाली कंप्यूटर-नियंत्रित मशीनें सेट और चलाता है।"],
+  cap:["Part program for a simple turned component","साध्या टर्न्ड भागासाठी पार्ट प्रोग्राम","साधारण टर्न्ड पुर्ज़े के लिए पार्ट प्रोग्राम"]},
+ {id:'BOA',elig:'ug',tags:['office','people'],int:[.1,.3,.1,.6,.5,.95],apt:{num:.55,verb:.55},
+  req:[['BANKOPS',3,3],['KYC',3,3],['CUST',3,3],['EXCEL',3,2],['COMM',3,2],['DIGI',3,2]],
+  n:["Banking Operations Associate","बँकिंग ऑपरेशन्स असोसिएट","बैंकिंग ऑपरेशंस एसोसिएट"],
+  d:["Handles accounts, KYC and customer service in banks and finance firms.","बँका व वित्तसंस्थांमध्ये खाती, KYC व ग्राहक सेवा हाताळतो.","बैंकों और वित्त संस्थाओं में खाते, KYC और ग्राहक सेवा सँभालता है।"],
+  cap:["Account-opening and KYC process simulation","खाते उघडणे व KYC प्रक्रियेचे अनुकरण","खाता खोलने और KYC प्रक्रिया का अभ्यास"]},
+ {id:'HCA',elig:'sci12',tags:['people','hands'],int:[.4,.4,.1,.95,.2,.4],apt:{verb:.5},
+  req:[['HYGIENE',4,3],['PATIENT',3,3],['FIRSTAID',3,3],['COMM',3,2],['RECORDS',2,1]],
+  n:["Healthcare Assistant","आरोग्यसेवा सहाय्यक","स्वास्थ्य सेवा सहायक"],
+  d:["Supports nurses and doctors with patient care, hygiene and records.","रुग्णसेवा, स्वच्छता व नोंदी यांत परिचारिका व डॉक्टरांना मदत करतो.","रोगी देखभाल, स्वच्छता और रिकॉर्ड में नर्सों और डॉक्टरों की मदद करता है।"],
+  cap:["Simulated patient-care routine and record log","रुग्णसेवा दिनक्रम व नोंदवहीचा सराव","रोगी देखभाल दिनचर्या और रिकॉर्ड का अभ्यास"]},
+ {id:'ATA',elig:'ata',tags:['field','people'],int:[.8,.6,.1,.5,.3,.4],apt:{num:.45,spat:.45},
+  req:[['AGRI',3,3],['AGRITECH',3,3],['COMM',3,2],['DIGI',3,2],['EXCEL',2,1]],
+  n:["Agriculture Technology Assistant","कृषी तंत्रज्ञान सहाय्यक","कृषि प्रौद्योगिकी सहायक"],
+  d:["Helps farmers adopt better practices, sensors and farm apps.","शेतकऱ्यांना सुधारित पद्धती, सेन्सर व शेती अ‍ॅप वापरण्यास मदत करतो.","किसानों को बेहतर तरीके, सेंसर और खेती ऐप अपनाने में मदद करता है।"],
+  cap:["Crop advisory sheet using weather and soil data","हवामान व माती माहितीवर आधारित पीक सल्ला पत्रक","मौसम और मिट्टी डेटा पर आधारित फसल सलाह पत्रक"]},
+ {id:'BDE',elig:'ug',tags:['people','field'],int:[.1,.2,.3,.7,.95,.4],apt:{verb:.65},
+  req:[['SALES',3,3],['COMM',4,3],['NEGOT',3,2],['EXCEL',3,2],['BIZ',3,2]],
+  n:["Business Development Executive","बिझनेस डेव्हलपमेंट एक्झिक्युटिव्ह","बिज़नेस डेवलपमेंट एग्ज़ीक्यूटिव"],
+  d:["Finds new customers and partners and grows sales.","नवे ग्राहक व भागीदार शोधून विक्री वाढवतो.","नए ग्राहक और साझेदार खोजकर बिक्री बढ़ाता है।"],
+  cap:["Lead list and pitch for a local MSME","स्थानिक MSME साठी ग्राहक यादी व सादरीकरण","स्थानीय MSME के लिए लीड सूची और पिच"]},
+ {id:'GD',elig:'c12',tags:['creative','office'],int:[.3,.3,.95,.3,.4,.3],apt:{spat:.6},
+  req:[['DESIGN',4,3],['GDTOOLS',4,3],['CONTENT',2,1],['COMM',2,1]],
+  n:["Graphic Designer","ग्राफिक डिझायनर","ग्राफ़िक डिज़ाइनर"],
+  d:["Creates visual designs for print, social media and brands.","छपाई, सोशल मीडिया व ब्रँडसाठी दृश्य रचना तयार करतो.","प्रिंट, सोशल मीडिया और ब्रांड के लिए विज़ुअल डिज़ाइन बनाता है।"],
+  cap:["Brand kit for a community organisation","सामुदायिक संस्थेसाठी ब्रँड किट","सामुदायिक संगठन के लिए ब्रांड किट"]}
+];
+const CMAP = Object.fromEntries(CAREERS.map(c=>[c.id,c]));
+const W = {interest:.30,aptitude:.20,skill:.25,preference:.15,constraints:.10};
+const HORIZON_WEEKS = 26;
+
+// Effective proficiency: verified level, or self-claim counted at half, capped at level 1
+function effLevel(e){ if(!e) return 0; return Math.max(e.v||0, 0.5*Math.min(e.s||0,2)); }
+function dependents(k, career){ return career.req.filter(r=>(SK[r[0]].pre||[]).some(p=>p[0]===k)).length; }
+function gapReport(L, career){
+  const rows = career.req.map(([k,T,I])=>{
+    const e=L.skills[k]; const p=effLevel(e); const v=(e&&e.v)||0;
+    const G=Math.max(0,T-p), WG=G*I, U=dependents(k,career), pri=WG*(1+0.25*U);
+    const hours=G*SK[k].h; const urg=hours/(L.hpw*HORIZON_WEEKS);
+    return {k,T,I,p,v,s:(e&&e.s)||0,src:e&&e.src,G,WG,U,pri,hours,urg};
+  });
+  const den=rows.reduce((a,r)=>a+r.I*r.T,0);
+  const R=100*rows.reduce((a,r)=>a+r.I*Math.min(r.p,r.T),0)/den;
+  const Rv=100*rows.reduce((a,r)=>a+r.I*Math.min(r.v,r.T),0)/den;
+  const gateRows=rows.filter(r=>r.I===3 && r.p<r.T-1);
+  const gate=gateRows.length>0;
+  return {rows,R,Rv,gate,gateRows,shown:gate?Math.min(R,69):R,hours:rows.reduce((a,r)=>a+r.hours,0)};
+}
+function learningOrder(rep, career){
+  const gaps=rep.rows.filter(r=>r.G>0); const placed=[]; const left=new Set(gaps.map(r=>r.k));
+  while(left.size){
+    const ready=gaps.filter(r=>left.has(r.k) && !(SK[r.k].pre||[]).some(p=>left.has(p[0])));
+    const pool=ready.length?ready:gaps.filter(r=>left.has(r.k));
+    pool.sort((a,b)=>b.pri-a.pri||b.I-a.I||a.k.localeCompare(b.k));
+    placed.push(pool[0]); left.delete(pool[0].k);
+  }
+  return placed;
+}
+function cosine(a,b){let d=0,x=0,y=0;for(let i=0;i<a.length;i++){d+=a[i]*b[i];x+=a[i]*a[i];y+=b[i]*b[i];}return x&&y?d/Math.sqrt(x*y):0;}
+function fit(L, c){
+  const q=QUAL[L.qual]; const eligible=ELIG[c.elig].f(q);
+  const sInt=cosine(L.int,c.int);
+  const ak=Object.keys(c.apt); const sApt=ak.reduce((a,k)=>a+Math.min(1,(L.apt[k]||0)/c.apt[k]),0)/ak.length;
+  const rep=gapReport(L,c); const sSkill=rep.Rv/100;
+  const matched=c.tags.filter(t=>L.prefs.includes(t)).length;
+  const sPref=L.prefs.length? (matched? 0.5+0.5*matched/L.prefs.length : 0.2) : 0.6;
+  const weeks=rep.hours/L.hpw; const sCon=weeks<=0?1:Math.min(1,HORIZON_WEEKS/weeks);
+  const comp={interest:sInt,aptitude:sApt,skill:sSkill,preference:sPref,constraints:sCon};
+  const score=100*Object.keys(W).reduce((a,k)=>a+W[k]*comp[k],0);
+  return {c,eligible,score,comp,rep,weeks,matched};
+}
+function rankCareers(L){
+  const all=CAREERS.map(c=>fit(L,c));
+  return {eligible:all.filter(f=>f.eligible).sort((a,b)=>b.score-a.score), blocked:all.filter(f=>!f.eligible)};
+}
+// ENGINE END
+
+const LEARNERS = {
+  priya:{name:["Priya","प्रिया","प्रिया"],line:["20 · B.Sc. Computer Science · Nashik","20 · बी.एस्सी. संगणक शास्त्र · नाशिक","20 · बी.एससी. कंप्यूटर साइंस · नासिक"],
+    qual:'BSC_CS',place:["Nashik, Maharashtra","नाशिक, महाराष्ट्र","नासिक, महाराष्ट्र"],hpw:8,prefs:['office'],
+    int:[.3,.82,.4,.35,.45,.6],apt:{num:.74,verb:.62,log:.78,spat:.55},
+    skills:{SQL:{s:2},EXCEL:{s:3,v:2,src:'mcq'},STATS:{s:2,v:1,src:'mcq'},CLEAN:{s:1},COMM:{s:3,v:2,src:'scenario'},PY:{s:3,v:3,src:'practical'},DIGI:{s:3,v:3,src:'mcq'},CONTENT:{s:2}}},
+  rahul:{name:["Rahul","राहुल","राहुल"],line:["19 · ITI Electrician · Chandrapur","19 · ITI इलेक्ट्रिशियन · चंद्रपूर","19 · ITI इलेक्ट्रीशियन · चंद्रपुर"],
+    qual:'ITI_ELEC',place:["Chandrapur, Maharashtra","चंद्रपूर, महाराष्ट्र","चंद्रपुर, महाराष्ट्र"],hpw:10,prefs:['field','hands'],
+    int:[.88,.45,.2,.35,.3,.45],apt:{num:.55,verb:.45,log:.55,spat:.7},
+    skills:{WIRING:{s:3,v:2,src:'practical'},ESAFETY:{s:3,v:2,src:'mcq'},DRAW:{s:2,v:1,src:'mcq'},TOOLS:{s:3,v:2,src:'practical'},COMM:{s:2},CUST:{s:2},MEASURE:{s:2,v:1,src:'practical'},WSAFE:{s:2,v:2,src:'mcq'},DIGI:{s:2},AGRI:{s:2}}},
+  sana:{name:["Sana","सना","सना"],line:["31 · B.Com, returning after a career break · Thane","31 · बी.कॉम, करिअर ब्रेकनंतर पुन्हा सुरुवात · ठाणे","31 · बी.कॉम, करियर ब्रेक के बाद वापसी · ठाणे"],
+    qual:'BCOM',place:["Thane, Maharashtra","ठाणे, महाराष्ट्र","ठाणे, महाराष्ट्र"],hpw:6,prefs:['office','people'],
+    int:[.1,.35,.25,.7,.5,.85],apt:{num:.62,verb:.7,log:.58,spat:.4},
+    skills:{EXCEL:{s:3,v:2,src:'mcq'},COMM:{s:3,v:3,src:'scenario'},CUST:{s:3,v:2,src:'scenario'},BANKOPS:{s:2},KYC:{s:1},DIGI:{s:3,v:2,src:'mcq'},SALES:{s:2},BIZ:{s:2,v:1,src:'mcq'},CONTENT:{s:2}}}
+};
+
+const PORTALS = {
+  SWAYAM:{n:"SWAYAM",url:"https://swayam.gov.in"},
+  NPTEL:{n:"NPTEL",url:"https://nptel.ac.in"},
+  SIDH:{n:"Skill India Digital Hub",url:"https://www.skillindiadigital.gov.in"},
+  NCS:{n:"National Career Service",url:"https://www.ncs.gov.in"},
+  NAPS:{n:"Apprenticeship India",url:"https://www.apprenticeshipindia.gov.in"}
+};
+const CAT_PORTALS = {tech:['SWAYAM','NPTEL'],soft:['SWAYAM','SIDH'],creative:['SWAYAM','SIDH'],voc:['SIDH','NAPS'],bank:['SIDH','SWAYAM'],digi:['SIDH','SWAYAM'],health:['SIDH'],agri:['SWAYAM','SIDH']};
+const OPP_PORTALS = {DA:['NCS','NAPS'],PYD:['NCS','NAPS'],DME:['NCS','SIDH'],ELE:['NAPS','NCS'],CNC:['NAPS','NCS'],BOA:['NCS','NAPS'],HCA:['NCS','SIDH'],ATA:['NCS','SIDH'],BDE:['NCS'],GD:['NCS','SIDH']};
+
+const DIMS = {
+  I:[["Hands-on (Realistic)","प्रत्यक्ष काम","व्यावहारिक"],["Investigative","शोधक / विश्लेषण","अन्वेषक / विश्लेषण"],["Artistic","सर्जनशील","रचनात्मक"],["Social","सामाजिक","सामाजिक"],["Enterprising","उद्यमशील","उद्यमी"],["Organised (Conventional)","व्यवस्थित","व्यवस्थित"]],
+  A:{num:["Numerical","संख्यात्मक","संख्यात्मक"],verb:["Verbal","भाषिक","भाषिक"],log:["Logical","तार्किक","तार्किक"],spat:["Spatial","अवकाशीय","स्थानिक"]}
+};
+const PREFS = {office:["Office / desk work","कार्यालयीन काम","ऑफ़िस का काम"],field:["Field / outdoor work","फिल्डवरील काम","फ़ील्ड का काम"],hands:["Hands-on with tools","साधनांसह प्रत्यक्ष काम","औज़ारों के साथ काम"],creative:["Creative work","सर्जनशील काम","रचनात्मक काम"],people:["Working with people","लोकांसोबत काम","लोगों के साथ काम"]};
+const LEVELS = [["None","शून्य","शून्य"],["Beginner","प्राथमिक","शुरुआती"],["Basic","मूलभूत","बुनियादी"],["Intermediate","मध्यम","मध्यम"],["Job-ready","नोकरीसाठी तयार","नौकरी हेतु तैयार"]];
+const SRC = {mcq:["Skill test","कौशल्य चाचणी","कौशल परीक्षा"],practical:["Practical task","प्रात्यक्षिक","प्रायोगिक कार्य"],scenario:["Scenario task","प्रसंग-आधारित कार्य","परिदृश्य कार्य"],project:["Reviewed project","तपासलेला प्रकल्प","जाँचा गया प्रोजेक्ट"]};
+
+const S = {
+ tag:["AI-Powered Career Transformation · Knowledge · Skills · Employment","AI-आधारित करिअर परिवर्तन · ज्ञान • कौशल्य • रोजगार","AI-संचालित करियर परिवर्तन · ज्ञान • कौशल • रोजगार"],
+ demonote:["Working demo for the Seva First Innovation Challenge. Sample learners and illustrative weights; scores are computed live by the same formulas as the design.","सेवा फर्स्ट इनोव्हेशन चॅलेंजसाठी कार्यरत डेमो. नमुना विद्यार्थी व उदाहरणादाखल वजने; गुण डिझाइनमधील सूत्रांनीच थेट मोजले जातात.","सेवा फ़र्स्ट इनोवेशन चैलेंज के लिए कार्यशील डेमो। नमूना शिक्षार्थी और उदाहरणार्थ भार; अंक डिज़ाइन के सूत्रों से ही तुरंत गणना होते हैं।"],
+ learner:["Learner","विद्यार्थी","शिक्षार्थी"],
+ own:["Try it yourself","स्वतः करून पाहा","खुद आज़माएँ"],
+ ownSub:["2-minute quick check","2 मिनिटांची झटपट चाचणी","2 मिनट की त्वरित जाँच"],
+ q:[["Where am I now?","मी आत्ता कुठे आहे?","मैं अभी कहाँ हूँ?"],["Where do I want to reach?","मला कुठे पोहोचायचे आहे?","मुझे कहाँ पहुँचना है?"],["What exactly am I missing?","माझ्याकडे नेमके काय कमी आहे?","मुझमें ठीक-ठीक क्या कमी है?"],["What should I learn first?","आधी काय शिकावे?","पहले क्या सीखूँ?"],["Which affordable resources can help?","कोणती परवडणारी साधने मदत करतील?","कौन-से किफ़ायती संसाधन मदद करेंगे?"],["How do I prove I've learned it?","मी शिकलो हे कसे सिद्ध करू?","कैसे साबित करूँ कि मैंने सीख लिया?"],["Am I ready for the next opportunity?","पुढील संधीसाठी मी तयार आहे का?","क्या मैं अगले अवसर के लिए तैयार हूँ?"]],
+ qsub:[
+  ["Profile, interests and aptitude, and skills with the evidence behind each level.","प्रोफाइल, आवडी, अभियोग्यता आणि प्रत्येक कौशल्य स्तरामागील पुरावा.","प्रोफ़ाइल, रुचियाँ, अभिक्षमता और हर कौशल स्तर के पीछे का प्रमाण।"],
+  ["Careers ranked by fit, with the reasons. Choose one as your goal.","योग्यतेनुसार क्रमवार करिअर, कारणांसह. एक ध्येय निवडा.","उपयुक्तता के अनुसार करियर, कारणों सहित। एक लक्ष्य चुनें।"],
+  ["Your current level against the job-ready level for each required skill.","प्रत्येक आवश्यक कौशल्यासाठी तुमचा सध्याचा स्तर व नोकरीसाठी लागणारा स्तर.","हर आवश्यक कौशल के लिए आपका वर्तमान स्तर बनाम नौकरी-योग्य स्तर।"],
+  ["Gaps ranked by importance, with foundation skills placed before the skills that depend on them.","महत्त्वानुसार क्रम; पायाभूत कौशल्ये त्यांवर अवलंबून कौशल्यांच्या आधी.","महत्व के अनुसार क्रम; बुनियादी कौशल उन पर निर्भर कौशलों से पहले।"],
+  ["A week-by-week plan using free government learning portals, fitted to your available hours.","मोफत शासकीय शिक्षण पोर्टल वापरून, तुमच्या वेळेनुसार आठवडावार योजना.","मुफ़्त सरकारी शिक्षण पोर्टल से, आपके समय के अनुसार सप्ताहवार योजना।"],
+  ["Readiness rises only with evidence: tests, practical tasks and reviewed projects. Try it below.","पुराव्यानेच तयारी वाढते: चाचण्या, प्रात्यक्षिके व तपासलेले प्रकल्प. खाली करून पाहा.","तैयारी केवल प्रमाण से बढ़ती है: परीक्षा, प्रायोगिक कार्य और जाँचे गए प्रोजेक्ट। नीचे आज़माएँ।"],
+  ["Your readiness score, what is holding it back, and where to look for verified openings.","तुमचा तयारी गुण, अडथळा काय आहे, व अधिकृत संधी कुठे शोधाव्या.","आपका तैयारी स्कोर, क्या रोक रहा है, और सत्यापित अवसर कहाँ खोजें।"]],
+ step:["Question","प्रश्न","प्रश्न"],
+ next:["Next question","पुढील प्रश्न","अगला प्रश्न"], back:["Back","मागे","पीछे"],
+ readiness:["Career readiness","करिअर तयारी","करियर तैयारी"],
+ verified:["Verified only","केवळ पडताळलेले","केवल सत्यापित"],
+ target:["Target","ध्येय","लक्ष्य"], current:["Current","सध्याचा","वर्तमान"], gap:["Gap","तफावत","अंतर"],
+ importance:["Importance","महत्त्व","महत्व"], priority:["Priority","प्राधान्य","प्राथमिकता"], deps:["Skills that need it","यावर अवलंबून कौशल्ये","इस पर निर्भर कौशल"],
+ imp:[null,["Useful","उपयुक्त","उपयोगी"],["Important","महत्त्वाचे","महत्वपूर्ण"],["Essential","अत्यावश्यक","अनिवार्य"]],
+ qual:["Qualification","शैक्षणिक पात्रता","योग्यता"], place:["Location","ठिकाण","स्थान"], hours:["Learning time","शिकण्याचा वेळ","सीखने का समय"], hpw:["hours / week","तास / आठवडा","घंटे / सप्ताह"],
+ prefs:["Work preferences","कामाची पसंती","काम की पसंद"], budget:["Budget","खर्च मर्यादा","बजट"], free:["Free resources only","केवळ मोफत साधने","केवल मुफ़्त संसाधन"],
+ interests:["Interest profile","आवडीचे स्वरूप","रुचि प्रोफ़ाइल"], aptitude:["Aptitude","अभियोग्यता","अभिक्षमता"], skills:["Skills and evidence","कौशल्ये व पुरावा","कौशल और प्रमाण"],
+ skill:["Skill","कौशल्य","कौशल"], claimed:["Self-claimed","स्वतः सांगितलेले","स्वयं बताया"], verifiedLvl:["Verified","पडताळलेले","सत्यापित"], used:["Level used","वापरलेला स्तर","प्रयुक्त स्तर"], evidence:["Evidence","पुरावा","प्रमाण"],
+ claimNote:["Self-claims are never treated as verified. Without a test or task, a claim counts for at most half a level up to Beginner.","स्वतः सांगितलेले कौशल्य कधीही पडताळलेले मानले जात नाही. चाचणीशिवाय त्याला जास्तीत जास्त प्राथमिक स्तरापर्यंत अर्धा गुण मिळतो.","स्वयं बताए कौशल को कभी सत्यापित नहीं माना जाता। परीक्षा के बिना उसे अधिकतम शुरुआती स्तर तक आधा श्रेय मिलता है।"],
+ notGuarantee:["These are suggestions based on your answers and evidence, not guarantees of a job or admission.","ही सूचना तुमच्या उत्तरांवर व पुराव्यावर आधारित आहे; नोकरी किंवा प्रवेशाची हमी नाही.","ये सुझाव आपके उत्तरों और प्रमाण पर आधारित हैं; नौकरी या प्रवेश की गारंटी नहीं।"],
+ fit:["Fit","योग्यता","उपयुक्तता"], comp:{interest:["Interest","आवड","रुचि"],aptitude:["Aptitude","अभियोग्यता","अभिक्षमता"],skill:["Proven skills","सिद्ध कौशल्ये","सिद्ध कौशल"],preference:["Preference","पसंती","पसंद"],constraints:["Time","वेळ","समय"]},
+ setGoal:["Set as my goal","माझे ध्येय म्हणून निवडा","मेरा लक्ष्य बनाएँ"], isGoal:["My goal","माझे ध्येय","मेरा लक्ष्य"],
+ later:["Possible after further study","पुढील शिक्षणानंतर शक्य","आगे की पढ़ाई के बाद संभव"], needs:["Needs","आवश्यक","आवश्यक"],
+ showAll:["Show all eligible careers","सर्व पात्र करिअर दाखवा","सभी पात्र करियर दिखाएँ"],
+ explain:["Explanation","स्पष्टीकरण","व्याख्या"], explainNote:["In the pilot this text is written by the AI assistant from the same verified data; numbers always come from the engine.","पायलटमध्ये हा मजकूर AI सहाय्यक याच पडताळलेल्या माहितीतून लिहितो; आकडे नेहमी इंजिनमधूनच येतात.","पायलट में यह पाठ AI सहायक इसी सत्यापित डेटा से लिखता है; आँकड़े हमेशा इंजन से आते हैं।"],
+ r_int:["Strong {x} interest","{x} आवड जास्त","{x} रुचि अधिक"], r_apt:["{x} aptitude meets the need","{x} अभियोग्यता पुरेशी","{x} अभिक्षमता पर्याप्त"], r_sk:["{x} already proven","{x} आधीच सिद्ध","{x} पहले से सिद्ध"], r_pref:["Matches: {x}","जुळते: {x}","मेल: {x}"],
+ legendCur:["Current level used","वापरलेला सध्याचा स्तर","प्रयुक्त वर्तमान स्तर"], legendGap:["Gap to close","भरून काढायची तफावत","पूरा करने योग्य अंतर"], legendTgt:["Job-ready target","नोकरीसाठी आवश्यक स्तर","नौकरी हेतु लक्ष्य"],
+ gate:["Held below 70 until every essential skill is within one level of its target: {x}.","प्रत्येक अत्यावश्यक कौशल्य ध्येयाच्या एका स्तराच्या आत येईपर्यंत गुण 70 च्या खाली ठेवला जातो: {x}.","जब तक हर अनिवार्य कौशल लक्ष्य से एक स्तर के भीतर न हो, स्कोर 70 से नीचे रखा जाता है: {x}।"],
+ noGap:["No gaps left for this career. Keep your evidence current.","या करिअरसाठी कोणतीही तफावत उरलेली नाही. पुरावे अद्ययावत ठेवा.","इस करियर के लिए कोई अंतर नहीं बचा। प्रमाण अद्यतन रखें।"],
+ whyFirst:["Why first","आधी का","पहले क्यों"],
+ learnBefore:["Learn before: {x}","यापूर्वी शिका: {x}","इससे पहले सीखें: {x}"],
+ estHours:["about {x} hours","सुमारे {x} तास","लगभग {x} घंटे"], weeksTxt:["Weeks {a}–{b}","आठवडे {a}–{b}","सप्ताह {a}–{b}"],
+ totalWeeks:["Plan length: about {x} weeks at {h} hours a week.","योजनेचा कालावधी: आठवड्याला {h} तास दिल्यास सुमारे {x} आठवडे.","योजना अवधि: सप्ताह में {h} घंटे देने पर लगभग {x} सप्ताह।"],
+ search:["search “{x}”","“{x}” शोधा","“{x}” खोजें"],
+ exitCheck:["Exit check: skill test at {x} level","पूर्णत्व तपासणी: {x} स्तराची कौशल्य चाचणी","समापन जाँच: {x} स्तर की कौशल परीक्षा"],
+ capstone:["Capstone project","अंतिम प्रकल्प","कैपस्टोन प्रोजेक्ट"], capNote:["Reviewed against a rubric by a counsellor or assessor; becomes portfolio evidence.","समुपदेशक किंवा मूल्यांकनकर्ता रुब्रिकनुसार तपासतात; पोर्टफोलिओचा पुरावा बनतो.","परामर्शदाता या मूल्यांकक रूब्रिक से जाँचते हैं; पोर्टफ़ोलियो प्रमाण बनता है।"],
+ portfolio:["Portfolio, resume and interview practice","पोर्टफोलिओ, रेझ्युमे व मुलाखत सराव","पोर्टफ़ोलियो, रिज़्यूमे और इंटरव्यू अभ्यास"], portNote:["Present your verified skills and capstone; practise common interview questions.","पडताळलेली कौशल्ये व प्रकल्प मांडा; मुलाखतीचे सामान्य प्रश्न सरावा.","सत्यापित कौशल और प्रोजेक्ट प्रस्तुत करें; सामान्य इंटरव्यू प्रश्नों का अभ्यास करें।"],
+ catalogNote:["Demo links go to the official portals only. In the pilot, each specific course is added to the catalogue after two-person verification, with its official link, language, duration and cost.","डेमोतील दुवे केवळ अधिकृत पोर्टलवर जातात. पायलटमध्ये प्रत्येक अभ्यासक्रम दोन व्यक्तींच्या पडताळणीनंतर, अधिकृत दुवा, भाषा, कालावधी व शुल्कासह जोडला जातो.","डेमो लिंक केवल आधिकारिक पोर्टल पर जाते हैं। पायलट में हर कोर्स दो-व्यक्ति सत्यापन के बाद आधिकारिक लिंक, भाषा, अवधि और शुल्क सहित जोड़ा जाता है।"],
+ skipped:["Already proven, skipped: {x}","आधीच सिद्ध, वगळले: {x}","पहले से सिद्ध, छोड़ा: {x}"],
+ passTest:["Pass skill test","कौशल्य चाचणी उत्तीर्ण","कौशल परीक्षा पास"], passHint:["Simulates a passed test one level up","एक स्तर वरील उत्तीर्ण चाचणीचे अनुकरण","एक स्तर ऊपर पास परीक्षा का अनुकरण"],
+ project:["Capstone reviewed and accepted","अंतिम प्रकल्प तपासून स्वीकारला","कैपस्टोन जाँचा और स्वीकृत"], reset:["Reset evidence","पुरावे पूर्ववत करा","प्रमाण रीसेट करें"],
+ logTitle:["Evidence added in this session","या सत्रात जोडलेले पुरावे","इस सत्र में जोड़े गए प्रमाण"],
+ courseNote:["Finishing a course alone does not raise your score. The test or project that follows it does.","केवळ अभ्यासक्रम पूर्ण केल्याने गुण वाढत नाही. त्यानंतरची चाचणी किंवा प्रकल्प वाढवतो.","केवल कोर्स पूरा करने से स्कोर नहीं बढ़ता। उसके बाद की परीक्षा या प्रोजेक्ट बढ़ाता है।"],
+ band:[["Early stage","सुरुवातीचा टप्पा","प्रारंभिक चरण"],["Building up","प्रगतीपथावर","प्रगति पर"],["Ready to apply","अर्ज करण्यास तयार","आवेदन हेतु तैयार"]],
+ nextAction:["Next best action","पुढील सर्वोत्तम पाऊल","अगला सर्वोत्तम कदम"],
+ nextTxt:["Close the {x} gap next. It is the highest-priority skill you can start now.","पुढे {x} ची तफावत भरा. आत्ता सुरू करता येईल असे हे सर्वाधिक प्राधान्याचे कौशल्य आहे.","अगला {x} का अंतर भरें। यह अभी शुरू करने योग्य सबसे प्राथमिक कौशल है।"],
+ whereLook:["Where to look for verified openings","अधिकृत संधी कुठे शोधाव्या","सत्यापित अवसर कहाँ खोजें"],
+ oppNote:["In the pilot, listings are verified by the admin team and matched with reasons. A match shows fit, not selection.","पायलटमध्ये संधींची पडताळणी प्रशासन करते व कारणांसह जुळवणी दाखवते. जुळवणी म्हणजे योग्यता, निवड नव्हे.","पायलट में अवसरों का सत्यापन प्रशासन करता है और कारण सहित मिलान दिखता है। मिलान उपयुक्तता है, चयन नहीं।"],
+ counsellor:["Talk to a counsellor","समुपदेशकाशी बोला","परामर्शदाता से बात करें"], counsNote:["Disagree with a result? Every score can be challenged and is reviewed by a human counsellor.","निकाल मान्य नाही? प्रत्येक गुणाला आव्हान देता येते व समुपदेशक त्याचा आढावा घेतात.","परिणाम से असहमत? हर स्कोर को चुनौती दी जा सकती है और परामर्शदाता समीक्षा करते हैं।"],
+ noGoal:["Choose a goal in question 2 first.","आधी प्रश्न 2 मध्ये ध्येय निवडा.","पहले प्रश्न 2 में लक्ष्य चुनें।"],
+ formulas:["How it is calculated","गणना कशी होते","गणना कैसे होती है"],
+ // own form
+ ownTitle:["Tell us about yourself","तुमच्याबद्दल सांगा","अपने बारे में बताएँ"],
+ interestQ:["How much does this sound like you?","हे तुमच्यासारखे किती वाटते?","यह आपके जैसा कितना लगता है?"],
+ lik:[["Not me","मी नाही","मैं नहीं"],["Somewhat","थोडेफार","कुछ हद तक"],["Very me","अगदी मी","बिल्कुल मैं"]],
+ aptQ:["Four quick questions","चार झटपट प्रश्न","चार त्वरित प्रश्न"],
+ aptNote:["The demo uses one question per area. The pilot uses a 30-question timed test.","डेमोमध्ये प्रत्येक क्षेत्रासाठी एक प्रश्न आहे. पायलटमध्ये 30 प्रश्नांची वेळबद्ध चाचणी असते.","डेमो में हर क्षेत्र के लिए एक प्रश्न है। पायलट में 30 प्रश्नों की समयबद्ध परीक्षा होती है।"],
+ rateQ:["Rate the skills you have (self-claimed)","तुमची कौशल्ये रेट करा (स्वतः सांगितलेली)","अपने कौशल रेट करें (स्वयं बताए)"],
+ seeResults:["See my results","माझे निकाल पाहा","मेरे परिणाम देखें"],
+ you:["You","तुम्ही","आप"], youLine:["Quick check · self-reported","झटपट चाचणी · स्वतः नोंदवलेले","त्वरित जाँच · स्वयं बताया"]
+};
+const INTQ = [
+ ["Fixing, building or repairing things with my hands","हातांनी वस्तू दुरुस्त करणे किंवा बनवणे","हाथों से चीज़ें ठीक करना या बनाना"],
+ ["Finding patterns and answers in numbers and facts","आकडे व माहितीमध्ये नमुने व उत्तरे शोधणे","आँकड़ों और तथ्यों में पैटर्न और उत्तर खोजना"],
+ ["Drawing, designing or creating something new","चित्र, रचना किंवा काहीतरी नवीन निर्माण करणे","चित्र, डिज़ाइन या कुछ नया बनाना"],
+ ["Helping, teaching or caring for people","लोकांना मदत करणे, शिकवणे किंवा काळजी घेणे","लोगों की मदद, पढ़ाना या देखभाल करना"],
+ ["Convincing people and leading a team","लोकांना पटवून देणे व संघाचे नेतृत्व करणे","लोगों को राज़ी करना और टीम का नेतृत्व करना"],
+ ["Keeping records neat and following clear steps","नोंदी नीट ठेवणे व ठराविक पायऱ्या पाळणे","रिकॉर्ड व्यवस्थित रखना और तय चरणों का पालन करना"]
+];
+const APTQ = [
+ {k:'num',q:["A shop sells 3 pens for ₹45. What do 7 pens cost?","एका दुकानात 3 पेन ₹45 ला मिळतात. 7 पेनची किंमत किती?","एक दुकान में 3 पेन ₹45 के हैं। 7 पेन कितने के होंगे?"],o:["₹95","₹105","₹115"],a:1},
+ {k:'verb',q:["Which word is closest in meaning to “accurate”?","“अचूक” या शब्दाचा सर्वात जवळचा अर्थ कोणता?","“सटीक” का सबसे निकट अर्थ कौन-सा है?"],o:[["careful","काळजीपूर्वक","सावधान"],["correct","बरोबर","सही"],["quick","जलद","तेज़"]],a:1},
+ {k:'log',q:["What comes next: 2, 6, 12, 20, ?","पुढील संख्या कोणती: 2, 6, 12, 20, ?","आगे क्या आएगा: 2, 6, 12, 20, ?"],o:["28","30","32"],a:1},
+ {k:'spat',q:["Which shape has the most lines of symmetry?","कोणत्या आकृतीला सर्वाधिक सममिती रेषा आहेत?","किस आकृति में सबसे अधिक सममिति रेखाएँ हैं?"],o:[["Square","चौरस","वर्ग"],["Rectangle","आयत","आयत"],["Triangle (scalene)","विषमभुज त्रिकोण","विषमबाहु त्रिभुज"]],a:0}
+];
+const OWN_SKILLS = ['EXCEL','COMM','PY','SQL','DIGI','DESIGN','SALES','ESAFETY','CUST','CONTENT'];
+
+
+const LI = {en:0,mr:1,hi:2};
+
+Object.assign(S, {
+ nav:{dash:["Dashboard","डॅशबोर्ड","डैशबोर्ड"],careers:["Career matches","करिअर पर्याय","करियर विकल्प"],gap:["Skill gap","कौशल्य तफावत","कौशल अंतर"],path:["Learning path","शिक्षण मार्ग","सीखने का मार्ग"],evidence:["Evidence & portfolio","पुरावे व पोर्टफोलिओ","प्रमाण और पोर्टफ़ोलियो"],opps:["Opportunities","संधी","अवसर"],assistant:["Ask Gyansetu","ज्ञानसेतुला विचारा","ज्ञानसेतु से पूछें"],profile:["My profile","माझी प्रोफाइल","मेरी प्रोफ़ाइल"]},
+ viewing:["Learner (sample)","विद्यार्थी (नमुना)","शिक्षार्थी (नमूना)"],
+ demopill:["Demo · sample data","डेमो · नमुना माहिती","डेमो · नमूना डेटा"],
+ sidefoot:["Working demo for the Seva First Innovation Challenge. Scores are computed live by the design's formulas; weights are illustrative until pilot calibration.","सेवा फर्स्ट इनोव्हेशन चॅलेंजसाठी कार्यरत डेमो. गुण डिझाइनमधील सूत्रांनी थेट मोजले जातात; पायलटपर्यंत वजने उदाहरणादाखल.","सेवा फ़र्स्ट इनोवेशन चैलेंज के लिए कार्यशील डेमो। अंक डिज़ाइन के सूत्रों से तुरंत गणना होते हैं; पायलट तक भार उदाहरणार्थ।"],
+ hello:["Namaste, {x}","नमस्कार, {x}","नमस्ते, {x}"],
+ helloSub:["Where you stand today, what is missing, and your next step.","आज तुम्ही कुठे आहात, काय कमी आहे, आणि पुढचे पाऊल.","आज आप कहाँ हैं, क्या कमी है, और अगला कदम।"],
+ goalLbl:["Career goal","करिअर ध्येय","करियर लक्ष्य"],
+ gapsLeft:["Skills to close","भरायची कौशल्ये","पूरे करने वाले कौशल"], ofTxt:["{a} of {b} required","{b} पैकी {a}","{b} में से {a}"],
+ planLen:["Plan length","योजनेचा कालावधी","योजना अवधि"], weeksU:["weeks","आठवडे","सप्ताह"],
+ matchesTop:["Top career matches","सर्वोत्तम करिअर पर्याय","शीर्ष करियर विकल्प"], viewAll:["View all","सर्व पाहा","सभी देखें"],
+ evRecent:["Proof of skill","कौशल्याचा पुरावा","कौशल का प्रमाण"], evCount:["{a} of {b} skills verified","{b} पैकी {a} कौशल्ये पडताळलेली","{b} में से {a} कौशल सत्यापित"],
+ done:["Completed","पूर्ण","पूर्ण"], active:["Now","सध्या","अभी"], locked:["Up next","पुढे","आगे"],
+ takeTest:["Take the {x} test","{x} चाचणी द्या","{x} परीक्षा दें"],
+ askTitle:["Ask Gyansetu","ज्ञानसेतुला विचारा","ज्ञानसेतु से पूछें"],
+ askNote:["Answers use only GYANSETU's verified data and your own scores. In this demo answers are built from templates; the pilot uses a grounded AI model with the same rules.","उत्तरे केवळ ज्ञानसेतुची पडताळलेली माहिती व तुमचे गुण वापरतात. या डेमोमध्ये उत्तरे साच्यांतून तयार होतात; पायलटमध्ये याच नियमांनी AI मॉडेल वापरले जाते.","उत्तर केवल ज्ञानसेतु के सत्यापित डेटा और आपके अंकों से बनते हैं। इस डेमो में उत्तर टेम्पलेट से हैं; पायलट में इन्हीं नियमों वाला AI मॉडल होगा।"],
+ aiLab:["AI explanation · grounded","AI स्पष्टीकरण · आधारित","AI व्याख्या · आधारित"], sources:["Sources","स्रोत","स्रोत"],
+ noEv:["No new evidence this session yet. Pass a skill test to see your readiness change.","या सत्रात अजून नवा पुरावा नाही. कौशल्य चाचणी उत्तीर्ण करा आणि तयारी बदललेली पाहा.","इस सत्र में अभी नया प्रमाण नहीं। कौशल परीक्षा पास करें और तैयारी बदलते देखें।"],
+ gapPage:["How far you are from job-ready, skill by skill, and what to learn first.","प्रत्येक कौशल्यात नोकरीसाठी तयार होण्यापासून तुम्ही किती दूर आहात, व आधी काय शिकावे.","हर कौशल में नौकरी-योग्य स्तर से आप कितने दूर हैं, और पहले क्या सीखें।"],
+ orderTitle:["Learning order","शिकण्याचा क्रम","सीखने का क्रम"],
+ careersPage:["Careers ranked by how well they fit you, with the reasons. Choose one as your goal.","तुम्हाला किती योग्य आहेत त्यानुसार करिअर, कारणांसह. एक ध्येय निवडा.","आपके लिए उपयुक्तता के अनुसार करियर, कारणों सहित। एक लक्ष्य चुनें।"],
+ pathPage:["A week-by-week plan using free government learning portals, fitted to your time.","मोफत शासकीय शिक्षण पोर्टल वापरून, तुमच्या वेळेनुसार आठवडावार योजना.","मुफ़्त सरकारी शिक्षण पोर्टल से, आपके समय के अनुसार सप्ताहवार योजना।"],
+ evPage:["Your readiness rises only with evidence. Try passing a test or getting your capstone reviewed.","पुराव्यानेच तयारी वाढते. चाचणी उत्तीर्ण करून किंवा प्रकल्प तपासून पाहा.","तैयारी केवल प्रमाण से बढ़ती है। परीक्षा पास करके या प्रोजेक्ट जाँचवाकर देखें।"],
+ oppPage:["Where you stand for the next step, and where to find verified openings.","पुढील टप्प्यासाठी तुमची स्थिती व अधिकृत संधी कुठे मिळतील.","अगले कदम के लिए आपकी स्थिति और सत्यापित अवसर कहाँ मिलेंगे।"],
+ profPage:["Your details, interests, aptitude and skills, with the evidence behind each level.","तुमची माहिती, आवडी, अभियोग्यता व कौशल्ये, प्रत्येक स्तरामागील पुराव्यासह.","आपका विवरण, रुचियाँ, अभिक्षमता और कौशल, हर स्तर के प्रमाण सहित।"],
+ oppReady:["Readiness {x} — apply now for internships and apprenticeships while you close the remaining gaps.","तयारी {x} — उर्वरित तफावत भरताना इंटर्नशिप व अप्रेंटिसशिपसाठी आत्ताच अर्ज करा.","तैयारी {x} — बाकी अंतर भरते हुए इंटर्नशिप और अप्रेंटिसशिप के लिए अभी आवेदन करें।"],
+ oppEarly:["Readiness {x} — focus on your learning path first; apprenticeships can start alongside.","तयारी {x} — आधी शिक्षण मार्गावर लक्ष द्या; अप्रेंटिसशिप सोबत सुरू करता येईल.","तैयारी {x} — पहले सीखने के मार्ग पर ध्यान दें; अप्रेंटिसशिप साथ में शुरू हो सकती है।"]
+});
+const ASKS = [
+ {q:["Why is my top skill gap important?","माझी सर्वात मोठी तफावत का महत्त्वाची आहे?","मेरा सबसे बड़ा कौशल अंतर क्यों ज़रूरी है?"],a:(c,rep,ord)=>{ const r=ord[0]; if(!r) return t('noGap');
+   const deps=c.req.filter(x=>(SK[x[0]].pre||[]).some(p=>p[0]===r.k)).map(x=>sn(x[0]));
+   const imp=tr(S.imp[r.I]).toLowerCase();
+   return {en:`${sn(r.k)} is rated ${imp} for ${tr(c.n)}. You are at ${fmt(r.p,1)} and the job-ready level is ${r.T}, so the gap is ${fmt(r.G,1)} levels.${deps.length?` It also unlocks ${deps.join(', ')}, which is why it comes first.`:''} Closing it would raise your readiness more than any other single skill you can start now.`,
+     mr:`${tr(c.n)} साठी ${sn(r.k)} हे ${imp} कौशल्य आहे. तुम्ही ${fmt(r.p,1)} स्तरावर आहात आणि नोकरीसाठी ${r.T} स्तर लागतो, म्हणजे ${fmt(r.G,1)} स्तरांची तफावत.${deps.length?` यानंतरच ${deps.join(', ')} शिकता येते, म्हणून ते आधी आहे.`:''}`,
+     hi:`${tr(c.n)} के लिए ${sn(r.k)} ${imp} कौशल है। आप ${fmt(r.p,1)} स्तर पर हैं और नौकरी के लिए ${r.T} स्तर चाहिए, यानी ${fmt(r.G,1)} स्तर का अंतर।${deps.length?` इसके बाद ही ${deps.join(', ')} सीखा जा सकता है, इसलिए यह पहले है।`:''}`}[st.lang]; }, src:(c,rep,ord)=>ord[0]?[sn(ord[0].k),tr(c.n)]:[]},
+ {q:["What should I do this week?","या आठवड्यात मी काय करावे?","इस सप्ताह मुझे क्या करना चाहिए?"],a:(c,rep,ord)=>{ const r=ord[0]; if(!r) return t('noGap'); const L=st.L;
+   const p=(CAT_PORTALS[SK[r.k].cat]||['SWAYAM']).map(x=>PORTALS[x].n).join(' / ');
+   return {en:`Spend your ${L.hpw} hours on ${sn(r.k)}: search “${SK[r.k].n[0]}” on ${p}, practise every day, and book the ${lvl(Math.min(r.T,Math.floor(r.p)+1))}-level skill test when you're ready. Passing it is what raises your score.`,
+     mr:`तुमचे ${L.hpw} तास ${sn(r.k)} साठी द्या: ${p} वर “${SK[r.k].n[0]}” शोधा, रोज सराव करा, आणि तयार झाल्यावर ${lvl(Math.min(r.T,Math.floor(r.p)+1))} स्तराची चाचणी द्या. चाचणी उत्तीर्ण झाल्यावरच गुण वाढतात.`,
+     hi:`अपने ${L.hpw} घंटे ${sn(r.k)} पर लगाएँ: ${p} पर “${SK[r.k].n[0]}” खोजें, रोज़ अभ्यास करें, और तैयार होने पर ${lvl(Math.min(r.T,Math.floor(r.p)+1))} स्तर की परीक्षा दें। परीक्षा पास करने से ही स्कोर बढ़ता है।`}[st.lang]; }, src:(c,rep,ord)=>ord[0]?[sn(ord[0].k)].concat((CAT_PORTALS[SK[ord[0].k].cat]||[]).map(x=>PORTALS[x].n)):[]},
+ {q:["How is my readiness calculated?","माझी तयारी कशी मोजली जाते?","मेरी तैयारी कैसे गणना होती है?"],a:(c,rep)=>({
+   en:`Each required skill counts by its importance. Your level counts up to the target, and self-claims count only up to half a level without a test. That gives ${fmt(rep.R,1)}.${rep.gate?` Because an essential skill is still far below target, the score is held below 70.`:''} Using only verified evidence, it is ${fmt(rep.Rv,1)}. Finishing a course alone does not change it; a passed test or reviewed project does.`,
+   mr:`प्रत्येक आवश्यक कौशल्य त्याच्या महत्त्वानुसार मोजले जाते. चाचणीशिवाय स्वतः सांगितलेल्या कौशल्याला जास्तीत जास्त अर्धा स्तर मिळतो. त्यातून ${fmt(rep.R,1)} गुण येतात.${rep.gate?' एखादे अत्यावश्यक कौशल्य अजून खूप मागे असल्याने गुण 70 च्या खाली ठेवला आहे.':''} केवळ पडताळलेल्या पुराव्यावर ${fmt(rep.Rv,1)}. केवळ अभ्यासक्रम पूर्ण केल्याने गुण बदलत नाही.`,
+   hi:`हर आवश्यक कौशल अपने महत्व के अनुसार गिना जाता है। परीक्षा के बिना स्वयं बताए कौशल को अधिकतम आधा स्तर मिलता है। इससे ${fmt(rep.R,1)} बनता है।${rep.gate?' कोई अनिवार्य कौशल अभी काफ़ी पीछे है, इसलिए स्कोर 70 से नीचे रखा गया है।':''} केवल सत्यापित प्रमाण से यह ${fmt(rep.Rv,1)} है। केवल कोर्स पूरा करने से स्कोर नहीं बदलता।`}[st.lang]), src:()=>[t('readiness')]},
+ {q:["Will this get me a job?","यामुळे मला नोकरी मिळेल का?","क्या इससे मुझे नौकरी मिलेगी?"],a:()=>({
+   en:"GYANSETU cannot promise a job. It shows where you fit, what to learn and how to prove it, so you can apply with evidence. A counsellor can review your plan with you at any time.",
+   mr:"ज्ञानसेतु नोकरीची हमी देऊ शकत नाही. तुम्ही कुठे योग्य आहात, काय शिकावे व ते कसे सिद्ध करावे हे दाखवते, जेणेकरून तुम्ही पुराव्यासह अर्ज करू शकता. समुपदेशक कधीही तुमची योजना तपासू शकतात.",
+   hi:"ज्ञानसेतु नौकरी की गारंटी नहीं दे सकता। यह बताता है कि आप कहाँ उपयुक्त हैं, क्या सीखें और उसे कैसे साबित करें, ताकि आप प्रमाण के साथ आवेदन करें। परामर्शदाता कभी भी आपकी योजना देख सकते हैं।"}[st.lang]), src:()=>[t('counsellor')]}
+];
+const ICONS = {
+ dash:'<path d="M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z"/>',
+ careers:'<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 6.5l-2 5-5 2 2-5z"/>',
+ gap:'<path d="M4 20h4V10H4zm6 0h4V4h-4zm6 0h4v-7h-4z"/>',
+ path:'<path d="M6 3a3 3 0 100 6 3 3 0 000-6zm12 12a3 3 0 100 6 3 3 0 000-6zM7 9v4a4 4 0 004 4h4v-2h-4a2 2 0 01-2-2V9z"/>',
+ evidence:'<path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/>',
+ opps:'<path d="M10 4h4a2 2 0 012 2v1h4a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1h4V6a2 2 0 012-2zm0 3h4V6h-4z"/>',
+ assistant:'<path d="M4 4h16v12H8l-4 4z"/>',
+ profile:'<path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.5-9 5v3h18v-3c0-2.5-4-5-9-5z"/>'
+};
+const PAGES=['dash','careers','gap','path','evidence','opps','assistant','profile'];
+const st = {lang:'en', who:'priya', page:'dash', goal:{priya:'DA'}, L:null, log:[], chat:[], ownL:null, showAll:false};
+function tr(a){ return Array.isArray(a)? (a[LI[st.lang]] ?? a[0]) : a; }
+function t(k, vars){ let s=tr(S[k]); if(vars) for(const v in vars) s=s.split('{'+v+'}').join(vars[v]); return s; }
+function sn(k){ return tr(SK[k].n); }
+function lvl(n){ return tr(LEVELS[Math.max(0,Math.min(4,Math.round(n)))]); }
+function fmt(n,d=0){ return Number(n).toFixed(d); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function loadLearner(id){
+  st.who=id; st.log=[]; st.chat=[]; st.iv=null; st.pq=null;
+  st.L = id==='own' ? (st.ownL?clone(st.ownL):null) : clone(LEARNERS[id]);
+  if(st.L && !st.goal[id]){ const r=rankCareers(st.L); st.goal[id]=r.eligible.length?r.eligible[0].c.id:null; }
+}
+function goal(){ return st.L && st.goal[st.who] ? CMAP[st.goal[st.who]] : null; }
+function ring(val,size=74,stroke=8){ const r=size/2-stroke/2-2, c=2*Math.PI*r, off=c*(1-val/100);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${fmt(val)} / 100"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/><circle class="ring-fg" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--saffron)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" fill="var(--ink)" font-family="Mukta, sans-serif" font-weight="800" font-size="${size*0.28}">${fmt(val)}</text></svg>`; }
+function bandOf(rep){ if(!rep.gate && rep.shown>=70) return 2; return rep.shown>=40?1:0; }
+function bar(label,v){ return `<div class="bar"><span>${label}</span><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,v*100))}%"></div></div><span class="val">${fmt(v*100)}</span></div>`; }
+function scale(r,cls=''){ const pc=x=>100*x/4;
+  return `<div class="scale ${cls}">${[1,2,3].map(x=>`<span class="tick" style="left:${pc(x)}%"></span>`).join('')}<span class="cur" style="width:${pc(Math.min(r.p,r.T))}%"></span>${r.G>0?`<span class="gp" style="left:${pc(r.p)}%;width:${pc(r.G)}%"></span>`:''}<span class="tgt" style="left:calc(${pc(r.T)}% - 1.5px)"></span></div>`; }
+function evBadge(r){ return r.v?`<span class="badge b-ver">${tr(SRC[r.src]||SRC.mcq)} · ${r.v}</span>`:r.s?`<span class="badge b-self">${t('claimed')} · ${r.s}</span>`:''; }
+function legend(){ return `<div class="legend"><span><i style="background:var(--indigo)"></i>${t('legendCur')}</span><span><i style="background:var(--amber-soft);border:1px dashed var(--amber)"></i>${t('legendGap')}</span><span><i style="background:var(--saffron)"></i>${t('legendTgt')}</span></div>`; }
+function head(title,sub,extra=''){ return `<div class="pagehead"><div><h1>${title}</h1><p>${sub}</p></div>${extra}</div>`; }
+function goalPicker(){ const r=rankCareers(st.L); const g=st.goal[st.who];
+  return `<div class="goal"><div><label for="goalSel">${t('goalLbl')}</label><select id="goalSel">${r.eligible.map(f=>`<option value="${f.c.id}" ${f.c.id===g?'selected':''}>${tr(f.c.n)}</option>`).join('')}</select></div></div>`; }
+function plan(L,c,ord){ let wk=0; const stg=ord.map(r=>{ const w=Math.max(1,Math.ceil(r.hours/L.hpw)); const a=wk+1; wk+=w; return {r,a,b:wk}; });
+  const capW=Math.max(2,Math.ceil(20/L.hpw)); const cap={a:wk+1,b:wk+capW}; wk+=capW; const porW=Math.max(1,Math.ceil(10/L.hpw)); const por={a:wk+1,b:wk+porW}; wk+=porW;
+  return {stg,cap,por,weeks:wk}; }
+function reasons(f){ const L=st.L, c=f.c, out=[];
+  c.int.forEach((v,i)=>{ if(v>=.6 && L.int[i]>=.6) out.push(t('r_int',{x:tr(DIMS.I[i])})); });
+  Object.keys(c.apt).forEach(k=>{ if((L.apt[k]||0)>=c.apt[k]) out.push(t('r_apt',{x:tr(DIMS.A[k])})); });
+  f.rep.rows.filter(r=>r.v>=r.T).forEach(r=>out.push(t('r_sk',{x:sn(r.k)})));
+  const m=c.tags.filter(x=>L.prefs.includes(x)); if(m.length) out.push(t('r_pref',{x:m.map(p=>tr(PREFS[p])).join(', ')}));
+  return out.slice(0,4); }
+
+// ---------- pages ----------
+function pDash(){
+  const L=st.L, c=goal(); if(!c) return head(t('hello',{x:tr(L.name)}),t('noGoal'));
+  const rep=gapReport(L,c), ord=learningOrder(rep,c), pl=plan(L,c,ord), r=rankCareers(L);
+  const gaps=rep.rows.filter(x=>x.G>0).length, ver=rep.rows.filter(x=>x.v>=x.T).length;
+  let h=head(t('hello',{x:tr(L.name)}),t('helloSub'),goalPicker());
+  h+=`<div class="kpis">
+   <div class="kpi">${ring(rep.shown)}<div><div class="lab">${t('readiness')}</div><span class="badge ${bandOf(rep)===2?'b-ver':'b-act'}">${tr(S.band[bandOf(rep)])}</span><div class="sub">${tr(c.n)}</div></div></div>
+   <div class="kpi"><div><div class="lab">${t('verified')}</div><div class="num">${fmt(rep.Rv)}<span class="muted" style="font-size:14px"> /100</span></div><div class="sub">${t('evCount',{a:ver,b:rep.rows.length})}</div></div></div>
+   <div class="kpi"><div><div class="lab">${t('gapsLeft')}</div><div class="num">${gaps}</div><div class="sub">${t('ofTxt',{a:gaps,b:rep.rows.length})}</div></div></div>
+   <div class="kpi"><div><div class="lab">${t('planLen')}</div><div class="num">${pl.weeks} <span style="font-size:15px" class="muted">${t('weeksU')}</span></div><div class="sub">${L.hpw} ${t('hpw')}</div></div></div></div>`;
+  // left column
+  let left=`<section class="card"><div class="card-h"><h3>${tr(S.nav.gap)}</h3><button type="button" class="linkbtn" data-page="gap">${t('viewAll')}</button></div>${legend()}`+
+    rep.rows.slice().sort((a,b)=>b.I-a.I||b.G-a.G).map(x=>`<div class="mg"><div class="nm">${sn(x.k)}<small>${tr(S.imp[x.I])}</small></div>${scale(x)}<div class="v">${x.G>0?`<span class="badge b-gap">−${fmt(x.G,1)}</span>`:'<span class="badge b-ver">✓</span>'}</div></div>`).join('')+
+    (rep.gate?`<p class="note" style="margin:10px 0 0">${t('gate',{x:rep.gateRows.map(x=>sn(x.k)).join(', ')})}</p>`:'')+`</section>`;
+  left+=`<section class="card"><div class="card-h"><h3>${tr(S.nav.path)}</h3><button type="button" class="linkbtn" data-page="path">${t('viewAll')}</button></div><div class="path">`+
+    rep.rows.filter(x=>x.G===0).slice(0,2).map(x=>`<div class="ps done"><span class="dot">✓</span><div><h4>${sn(x.k)}</h4><div class="note">${lvl(x.T)}</div></div><span class="badge b-ver">${t('done')}</span></div>`).join('')+
+    pl.stg.slice(0,4).map(({r:x,a,b},i)=>`<div class="ps ${i===0?'active':''}"><span class="dot">${i+1}</span><div><h4>${sn(x.k)}</h4><div class="note">${lvl(x.p)} → ${lvl(x.T)} · ${t('weeksTxt',{a,b})}</div></div><span class="badge ${i===0?'b-act':'b-self'}">${i===0?t('active'):t('locked')}</span></div>`).join('')+
+    `<div class="ps"><span class="dot">★</span><div><h4>${t('capstone')}</h4><div class="note">${tr(c.cap)} · ${t('weeksTxt',pl.cap)}</div></div><span class="badge b-self">${t('locked')}</span></div></div></section>`;
+  // right column
+  let right='';
+  if(ord.length) right+=`<section class="card" style="background:var(--indigo);color:var(--surface);border-color:var(--indigo)"><div class="lab" style="font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;opacity:.8">${t('nextAction')}</div>
+    <h3 style="font-size:20px;margin:4px 0 6px">${sn(ord[0].k)}</h3><p style="margin:0 0 12px;opacity:.9;font-size:13.5px">${t('nextTxt',{x:sn(ord[0].k)})}</p>
+    <div class="row"><button type="button" class="btn sm" style="background:var(--saffron);border-color:var(--saffron);color:#fff" data-pass="${ord[0].k}">${t('takeTest',{x:sn(ord[0].k)})}</button><button type="button" class="btn sm ghost" style="color:var(--surface);border-color:var(--surface)" data-page="path">${tr(S.nav.path)}</button></div></section>`;
+  right+=toolkitCard();
+  right+=`<section class="card"><div class="card-h"><h3>${t('matchesTop')}</h3><button type="button" class="linkbtn" data-page="careers">${t('viewAll')}</button></div>`+
+    r.eligible.slice(0,4).map(f=>`<div class="mm"><div><b>${tr(f.c.n)}</b> ${f.c.id===c.id?`<span class="badge b-ess">${t('isGoal')}</span>`:''}<div class="meter"><i style="width:${f.score}%"></i></div></div><div class="fit">${fmt(f.score)}</div></div>`).join('')+`<p class="note" style="margin:8px 0 0">${t('notGuarantee')}</p></section>`;
+  right+=`<section class="card"><div class="card-h"><h3>${t('evRecent')}</h3><button type="button" class="linkbtn" data-page="evidence">${t('viewAll')}</button></div>`+
+    (st.log.length?`<div class="log">${st.log.slice(0,3).map(x=>`<div>${x}</div>`).join('')}</div>`:`<div class="row" style="gap:6px">${rep.rows.filter(x=>x.v).map(x=>`<span class="badge b-ver">${sn(x.k)} · ${x.v}</span>`).join('')}</div><p class="note">${t('noEv')}</p>`)+`</section>`;
+  right+=`<section class="card"><div class="card-h"><h3>${t('askTitle')}</h3><button type="button" class="linkbtn" data-page="assistant">${t('viewAll')}</button></div><div class="chips">${ASKS.slice(0,3).map((a,i)=>`<button type="button" data-ask="${i}">${tr(a.q)}</button>`).join('')}</div></section>`;
+  h+=`<div class="dash"><div class="col">${left}</div><div class="col">${right}</div></div>`;
+  return h;
+}
+function explainCareer(f){ const c=f.c, top=f.rep.rows.filter(r=>r.G>0).sort((a,b)=>b.pri-a.pri)[0]; const di=c.int.indexOf(Math.max(...c.int));
+  return {en:`${tr(c.n)} suits people with a strong ${tr(DIMS.I[di])} side, and your answers show that. Your proven skills already cover ${fmt(f.rep.Rv)}% of what the role needs.${top?` The biggest step ahead is ${sn(top.k)}.`:''}`,
+   mr:`${tr(c.n)} हे ${tr(DIMS.I[di])} प्रवृत्ती असलेल्यांसाठी योग्य आहे, आणि तुमच्या उत्तरांत ती दिसते. तुमची सिद्ध कौशल्ये या भूमिकेच्या गरजेपैकी ${fmt(f.rep.Rv)}% पूर्ण करतात.${top?` पुढील सर्वात मोठे पाऊल म्हणजे ${sn(top.k)}.`:''}`,
+   hi:`${tr(c.n)} उन लोगों के लिए उपयुक्त है जिनमें ${tr(DIMS.I[di])} प्रवृत्ति प्रबल है, और आपके उत्तरों में यह दिखती है। आपके सिद्ध कौशल इस भूमिका की ज़रूरत का ${fmt(f.rep.Rv)}% पूरा करते हैं।${top?` आगे सबसे बड़ा कदम ${sn(top.k)} है।`:''}`}[st.lang]; }
+function pCareers(){
+  const r=rankCareers(st.L); let h=head(tr(S.nav.careers),t('careersPage'));
+  h+=`<div class="banner" style="margin-bottom:14px">${t('notGuarantee')}</div>`;
+  const shown=st.showAll?r.eligible:r.eligible.slice(0,5);
+  h+=`<div class="cards">${shown.map((f,i)=>{ const sel=st.goal[st.who]===f.c.id;
+    return `<article class="ccard ${sel?'sel':''}"><div class="top"><div><h4><span class="rank">${i+1}</span>${tr(f.c.n)}</h4><div class="note">${tr(f.c.d)}</div></div><div class="fitnum">${fmt(f.score)}<small>/100 ${t('fit')}</small></div></div>
+     <div class="comp">${Object.keys(W).map(k=>`<div>${tr(S.comp[k])} · ${fmt(f.comp[k]*100)}<div class="meter"><i style="width:${f.comp[k]*100}%"></i></div></div>`).join('')}</div>
+     <div class="reasons">${reasons(f).map(x=>`<span>${x}</span>`).join('')}</div>
+     ${sel?`<div class="ai"><span class="lab">${t('aiLab')}</span>${explainCareer(f)}</div>`:''}
+     <div class="row">${sel?`<span class="badge b-ess">${t('isGoal')}</span>`:`<button type="button" class="btn sm ghost" data-goal="${f.c.id}">${t('setGoal')}</button>`}</div></article>`;}).join('')}</div>`;
+  if(!st.showAll && r.eligible.length>5) h+=`<div class="row" style="margin-top:10px"><button type="button" class="btn sm ghost" data-showall="1">${t('showAll')} (${r.eligible.length})</button></div>`;
+  if(r.blocked.length) h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('later')}</h3></div><div class="tbl-wrap"><table><tbody>${r.blocked.map(f=>`<tr><td>${tr(f.c.n)}</td><td class="muted">${t('needs')}: ${tr(ELIG[f.c.elig].n)}</td></tr>`).join('')}</tbody></table></div></section>`;
+  h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('formulas')}</h3></div><div class="formula">Fit = 100 × (0.30 Interest + 0.20 Aptitude + 0.25 Proven skills + 0.15 Preference + 0.10 Time)
+Qualification is an eligibility gate, not a weight. Weights are expert starting values, calibrated in the pilot.</div></section>`;
+  return h;
+}
+function pGap(){
+  const c=goal(); const rep=gapReport(st.L,c), ord=learningOrder(rep,c);
+  let h=head(tr(S.nav.gap)+' · '+tr(c.n),t('gapPage'),goalPicker());
+  h+=`<section class="card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><span class="note">${t('readiness')} <b>${fmt(rep.shown,1)}</b> · ${t('verified')} <b>${fmt(rep.Rv,1)}</b></span>${legend()}</div>
+   <div class="tbl-wrap"><table><thead><tr><th>${t('skill')}</th><th>${t('importance')}</th><th>${t('evidence')}</th><th style="min-width:200px">${t('current')} → ${t('target')}</th><th class="num">${t('gap')}</th></tr></thead><tbody>`+
+   rep.rows.slice().sort((a,b)=>b.I-a.I||b.G-a.G).map(x=>`<tr><td><b>${sn(x.k)}</b></td><td><span class="badge ${x.I===3?'b-ess':'b-self'}">${tr(S.imp[x.I])}</span></td><td>${evBadge(x)||'–'}</td><td>${scale(x,'lg')}<div class="note">${fmt(x.p,1)} → ${x.T} (${lvl(x.T)})</div></td><td class="num">${x.G>0?`<span class="badge b-gap">${fmt(x.G,1)}</span>`:'<span class="badge b-ver">✓</span>'}</td></tr>`).join('')+`</tbody></table></div>`+
+   (rep.gate?`<div class="banner" style="margin-top:12px">${t('gate',{x:rep.gateRows.map(x=>sn(x.k)).join(', ')})}</div>`:'')+`</section>`;
+  if(ord.length) h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('orderTitle')}</h3></div><div class="tbl-wrap"><table><thead><tr><th>#</th><th>${t('skill')}</th><th class="num">${t('gap')}</th><th class="num">${t('importance')}</th><th class="num">${t('deps')}</th><th class="num">${t('priority')}</th><th>${t('whyFirst')}</th></tr></thead><tbody>`+
+   ord.map((r,i)=>{ const pre=(SK[r.k].pre||[]).map(p=>p[0]).filter(k=>ord.some(o=>o.k===k)); return `<tr><td>${i+1}</td><td><b>${sn(r.k)}</b></td><td class="num">${fmt(r.G,1)}</td><td class="num">${r.I}</td><td class="num">${r.U}</td><td class="num"><b>${fmt(r.pri,2)}</b></td><td class="note">${pre.length?t('learnBefore',{x:pre.map(sn).join(', ')}):''}</td></tr>`;}).join('')+`</tbody></table></div></section>`;
+  h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('formulas')}</h3></div><div class="formula">Level used  P = max(Verified, 0.5 × min(Self-claimed, 2))
+Gap         G = max(0, Target − P)
+Priority      = G × Importance × (1 + 0.25 × skills that depend on it)
+Readiness   R = 100 × Σ Importance × min(P, Target) ÷ Σ Importance × Target = ${fmt(rep.R,1)}
+Verified      same formula using verified levels only                        = ${fmt(rep.Rv,1)}</div></section>`;
+  return h;
+}
+function pPath(){
+  const c=goal(), L=st.L, rep=gapReport(L,c), ord=learningOrder(rep,c), pl=plan(L,c,ord);
+  let h=head(tr(S.nav.path)+' · '+tr(c.n),t('pathPage'),goalPicker());
+  h+=`<section class="card"><div class="row" style="justify-content:space-between"><div class="row"><label for="hpw">${t('hours')}: <b>${L.hpw}</b> ${t('hpw')}</label><input id="hpw" type="range" min="2" max="30" step="1" value="${L.hpw}"></div><span class="badge b-ver">${t('free')}</span></div>
+   <p class="note" style="margin:8px 0 0">${t('totalWeeks',{x:pl.weeks,h:L.hpw})}</p></section>`;
+  h+=`<section class="card" style="margin-top:16px"><div class="path">`+
+   pl.stg.map(({r,a,b},i)=>`<div class="ps ${i===0?'active':''}"><span class="dot">${i+1}</span><div><h4>${sn(r.k)}</h4><div class="note">${lvl(r.p)} → ${lvl(r.T)} · ${t('estHours',{x:Math.round(r.hours)})} · ${t('weeksTxt',{a,b})}</div>
+     <div class="res">${(CAT_PORTALS[SK[r.k].cat]||['SWAYAM']).map(p=>`<a href="${PORTALS[p].url}" target="_blank" rel="noopener">${PORTALS[p].n} <small>${t('search',{x:SK[r.k].n[0]})}</small></a>`).join('')}</div>
+     <div class="note" style="margin-top:4px">${t('exitCheck',{x:lvl(r.T)})}</div></div><span class="badge ${i===0?'b-act':'b-self'}">${i===0?t('active'):t('locked')}</span></div>`).join('')+
+   `<div class="ps"><span class="dot">★</span><div><h4>${t('capstone')}: ${tr(c.cap)}</h4><div class="note">${t('weeksTxt',pl.cap)} · ${t('capNote')}</div></div><span class="badge b-self">${t('locked')}</span></div>
+    <div class="ps"><span class="dot">✎</span><div><h4>${t('portfolio')}</h4><div class="note">${t('weeksTxt',pl.por)} · ${t('portNote')}</div></div><span class="badge b-self">${t('locked')}</span></div></div>`;
+  const skip=rep.rows.filter(r=>r.G===0); if(skip.length) h+=`<p class="note">${t('skipped',{x:skip.map(r=>sn(r.k)).join(', ')})}</p>`;
+  h+=`</section><div class="banner" style="margin-top:16px">${t('catalogNote')}</div>`;
+  return h;
+}
+function pEvidence(){
+  const c=goal(), rep=gapReport(st.L,c);
+  let h=head(tr(S.nav.evidence),t('evPage'),`<div class="goal">${ring(rep.shown,60,7)}<div><label>${t('readiness')}</label><b>${tr(c.n)}</b><div class="note">${t('verified')} ${fmt(rep.Rv,1)}</div></div></div>`);
+  h+=`<section class="card"><div class="tbl-wrap"><table><thead><tr><th>${t('skill')}</th><th>${t('evidence')}</th><th class="num">${t('current')}</th><th class="num">${t('target')}</th><th></th></tr></thead><tbody>`+
+   rep.rows.map(r=>`<tr><td>${sn(r.k)}</td><td>${evBadge(r)||'–'}</td><td class="num">${fmt(r.p,1)}</td><td class="num">${r.T}</td><td>${r.v<r.T?`<button type="button" class="btn sm ghost" data-pass="${r.k}" title="${t('passHint')}">${t('passTest')}</button>`:'<span class="badge b-ver">✓</span>'}</td></tr>`).join('')+`</tbody></table></div>
+   <div class="row" style="margin-top:12px"><button type="button" class="btn sm" data-project="1">${t('project')}</button><button type="button" class="btn sm ghost" data-reset="1">${t('reset')}</button></div>
+   <p class="note">${t('courseNote')} ${t('passHint')}.</p></section>`;
+  h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('logTitle')}</h3></div>${st.log.length?`<div class="log">${st.log.map(x=>`<div>${x}</div>`).join('')}</div>`:`<p class="note">${t('noEv')}</p>`}</section>`;
+  return h;
+}
+function pOpps(){
+  const c=goal(), rep=gapReport(st.L,c), ord=learningOrder(rep,c), b=bandOf(rep);
+  let h=head(tr(S.nav.opps),t('oppPage'));
+  h+=`<div class="two"><section class="card"><div class="row" style="gap:16px">${ring(rep.shown,104,10)}<div><div style="font-family:var(--f-display);font-size:22px;font-weight:800">${tr(S.band[b])}</div><div class="note">${tr(c.n)} · ${t('verified')} ${fmt(rep.Rv,1)}</div></div></div>
+    <p style="margin:12px 0 0">${rep.shown>=60?t('oppReady',{x:fmt(rep.shown)}):t('oppEarly',{x:fmt(rep.shown)})}</p>
+    ${rep.gate?`<p class="note">${t('gate',{x:rep.gateRows.map(x=>sn(x.k)).join(', ')})}</p>`:''}
+    ${ord.length?`<div class="ai" style="margin-top:10px"><span class="lab">${t('nextAction')}</span>${t('nextTxt',{x:sn(ord[0].k)})}</div>`:''}</section>
+   <section class="card"><div class="card-h"><h3>${t('whereLook')}</h3></div><div class="path">${OPP_PORTALS[c.id].map(p=>`<div class="ps"><span class="dot">↗</span><div><h4><a href="${PORTALS[p].url}" target="_blank" rel="noopener">${PORTALS[p].n}</a></h4><div class="note">${PORTALS[p].url.replace('https://','')}</div></div><span></span></div>`).join('')}</div>
+    <p class="note">${t('oppNote')}</p><p class="note"><b>${t('counsellor')}.</b> ${t('counsNote')}</p></section></div>`;
+  return h;
+}
+function pAssistant(){
+  const c=goal(), rep=gapReport(st.L,c), ord=learningOrder(rep,c);
+  let h=head(t('askTitle'),t('askNote'));
+  h+=`<section class="card"><div class="chat">`;
+  if(!st.chat.length) h+=`<div class="msg a"><span class="lab">${t('aiLab')}</span>${t('hello',{x:tr(st.L.name)})}. ${t('helloSub')}</div>`;
+  st.chat.forEach(m=>{ if(m.u!==undefined) h+=`<div class="msg u">${tr(ASKS[m.u].q)}</div>`;
+    else { const A=ASKS[m.a]; h+=`<div class="msg a"><span class="lab">${t('aiLab')}</span>${A.a(c,rep,ord)}<div class="src">${A.src(c,rep,ord).map(s=>`<span class="badge b-ess">${s}</span>`).join('')}</div></div>`; } });
+  h+=`</div><div class="chips" style="margin-top:14px">${ASKS.map((a,i)=>`<button type="button" data-ask="${i}">${tr(a.q)}</button>`).join('')}</div></section>`;
+  return h;
+}
+function pProfile(){
+  const L=st.L; let h=head(tr(S.nav.profile),t('profPage'));
+  h+=`<section class="card"><div class="kv"><div><b>${t('qual')}</b>${tr(QUAL[L.qual].n)}</div><div><b>${t('place')}</b>${tr(L.place)}</div><div><b>${t('hours')}</b>${L.hpw} ${t('hpw')}</div><div><b>${t('prefs')}</b>${L.prefs.map(p=>tr(PREFS[p])).join(', ')||'–'}</div></div></section>`;
+  h+=`<div class="two" style="margin-top:16px"><section class="card"><div class="card-h"><h3>${t('interests')}</h3></div><div class="bars">${L.int.map((v,i)=>bar(tr(DIMS.I[i]),v)).join('')}</div></section>
+   <section class="card"><div class="card-h"><h3>${t('aptitude')}</h3></div><div class="bars">${Object.keys(DIMS.A).map(k=>bar(tr(DIMS.A[k]),L.apt[k]||0)).join('')}</div></section></div>`;
+  h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('skills')}</h3></div><div class="tbl-wrap"><table><thead><tr><th>${t('skill')}</th><th>${t('claimed')}</th><th>${t('verifiedLvl')}</th><th>${t('evidence')}</th><th class="num">${t('used')}</th></tr></thead><tbody>`+
+   Object.keys(L.skills).map(k=>{const e=L.skills[k]; return `<tr><td>${sn(k)}</td><td>${e.s?`${e.s} · ${lvl(e.s)}`:'–'}</td><td>${e.v?`${e.v} · ${lvl(e.v)}`:'–'}</td><td>${e.v?`<span class="badge b-ver">${tr(SRC[e.src])}</span>`:`<span class="badge b-self">${t('claimed')}</span>`}</td><td class="num">${fmt(effLevel(e),1)}</td></tr>`}).join('')+
+   `</tbody></table></div><p class="note">${t('claimNote')}</p></section>`;
+  return h;
+}
+function pOwn(){
+  let h=head(t('ownTitle'),t('claimNote'))+`<form id="ownform">`;
+  h+=`<fieldset><legend>${t('qual')}</legend><select id="o-qual">${Object.keys(QUAL).map(k=>`<option value="${k}" ${k==='BSC'?'selected':''}>${tr(QUAL[k].n)}</option>`).join('')}</select>
+     <div class="row" style="margin-top:10px"><label for="o-hpw">${t('hours')}</label><select id="o-hpw">${[4,6,8,10,15,20].map(x=>`<option ${x===8?'selected':''} value="${x}">${x} ${t('hpw')}</option>`).join('')}</select></div></fieldset>`;
+  h+=`<fieldset><legend>${t('prefs')}</legend><div class="checks">${Object.keys(PREFS).map(p=>`<label><input type="checkbox" name="pref" value="${p}" id="o-p-${p}"> ${tr(PREFS[p])}</label>`).join('')}</div></fieldset>`;
+  h+=`<fieldset><legend>${t('interestQ')}</legend>${INTQ.map((q,i)=>`<div class="q"><span>${tr(q)}</span><div class="seg" role="radiogroup">${[0,1,2].map(v=>`<label><input type="radio" name="int${i}" value="${v}" id="o-i${i}-${v}" ${v===1?'checked':''}><span>${tr(S.lik[v])}</span></label>`).join('')}</div></div>`).join('')}</fieldset>`;
+  h+=`<fieldset><legend>${t('aptQ')}</legend>${APTQ.map((q,i)=>`<div class="q"><span>${tr(q.q)}</span><div class="seg" role="radiogroup">${q.o.map((o,j)=>`<label><input type="radio" name="apt${i}" value="${j}" id="o-a${i}-${j}"><span>${tr(o)}</span></label>`).join('')}</div></div>`).join('')}<p class="note">${t('aptNote')}</p></fieldset>`;
+  h+=`<fieldset><legend>${t('rateQ')}</legend>${OWN_SKILLS.map(k=>`<div class="q"><span>${sn(k)}</span><div class="seg" role="radiogroup">${[0,1,2,3,4].map(v=>`<label><input type="radio" name="sk-${k}" value="${v}" id="o-s-${k}-${v}" ${v===0?'checked':''}><span>${v}</span></label>`).join('')}</div></div>`).join('')}
+     <p class="note">0 ${lvl(0)} · 1 ${lvl(1)} · 2 ${lvl(2)} · 3 ${lvl(3)} · 4 ${lvl(4)}</p></fieldset>`;
+  h+=`<div class="row" style="justify-content:flex-end"><button type="submit" class="btn">${t('seeResults')}</button></div></form>`;
+  return h;
+}
+function submitOwn(form){
+  const fd=new FormData(form);
+  const qual=document.getElementById('o-qual').value, hpw=+document.getElementById('o-hpw').value, prefs=fd.getAll('pref'), map=[0.15,0.5,0.9];
+  const int=INTQ.map((_,i)=>map[+fd.get('int'+i)]);
+  const apt={}; APTQ.forEach((q,i)=>{ apt[q.k]= fd.get('apt'+i)!==null && +fd.get('apt'+i)===q.a ? 0.75 : 0.4; });
+  const skills={}; OWN_SKILLS.forEach(k=>{ const v=+fd.get('sk-'+k); if(v>0) skills[k]={s:v}; });
+  st.ownL={name:S.you,line:S.youLine,qual,place:["Maharashtra","महाराष्ट्र","महाराष्ट्र"],hpw,prefs,int,apt,skills};
+  st.goal.own=null; loadLearner('own'); st.page='dash'; render();
+}
+
+// ================= Job-ready toolkit: practice, mock interview, resume =================
+Object.assign(S.nav, {practice:["Practice questions","सराव प्रश्न","अभ्यास प्रश्न"], interview:["Mock interview","मॉक मुलाखत","मॉक इंटरव्यू"], resume:["Resume builder","रेझ्युमे तयार करा","रिज़्यूमे बिल्डर"]});
+Object.assign(S, {
+ toolkit:["Job-ready toolkit","नोकरी-तयारी साधने","नौकरी-तैयारी टूलकिट"],
+ toolkitSub:["Practise skills, rehearse interviews and build your resume.","कौशल्यांचा सराव, मुलाखतीची तयारी आणि रेझ्युमे.","कौशल अभ्यास, इंटरव्यू की तैयारी और रिज़्यूमे।"],
+ aiOn:["AI live","AI सुरू","AI चालू"], aiOff:["Practice mode","सराव मोड","अभ्यास मोड"],
+ aiOffNote:["Rule-based feedback in this view. AI feedback turns on when GYANSETU is opened inside Claude.","या दृश्यात नियम-आधारित अभिप्राय. Claude मध्ये उघडल्यावर AI अभिप्राय सुरू होतो.","इस दृश्य में नियम-आधारित प्रतिक्रिया। Claude में खोलने पर AI प्रतिक्रिया चालू होती है।"],
+ aiOnNote:["An AI interviewer adapts its questions to your profile and scores each answer. It never promises a job.","AI मुलाखतकार तुमच्या प्रोफाइलनुसार प्रश्न विचारतो व प्रत्येक उत्तराचे मूल्यमापन करतो. नोकरीची हमी देत नाही.","AI इंटरव्यूअर आपकी प्रोफ़ाइल के अनुसार प्रश्न पूछता है और हर उत्तर का मूल्यांकन करता है। नौकरी की गारंटी नहीं देता।"],
+ // practice
+ pqPage:["Practise the skills your goal needs. Practice prepares you; only the verified skill test changes your readiness.","तुमच्या ध्येयासाठी लागणाऱ्या कौशल्यांचा सराव करा. सराव तयारीसाठी आहे; तयारी गुण फक्त पडताळणी चाचणीने बदलतो.","अपने लक्ष्य के कौशलों का अभ्यास करें। अभ्यास तैयारी के लिए है; तैयारी स्कोर केवल सत्यापित परीक्षा से बदलता है।"],
+ pqChoose:["Choose a skill","कौशल्य निवडा","कौशल चुनें"], pqCheck:["Check answer","उत्तर तपासा","उत्तर जाँचें"], pqNext:["Next question","पुढील प्रश्न","अगला प्रश्न"],
+ pqDone:["Practice complete","सराव पूर्ण","अभ्यास पूर्ण"], pqScore:["You scored {a} of {b}","तुम्हाला {b} पैकी {a} गुण मिळाले","आपने {b} में से {a} अंक पाए"], pqRetry:["Practise again","पुन्हा सराव करा","फिर से अभ्यास करें"],
+ pqAI:["Generate 5 new questions with AI","AI ने 5 नवे प्रश्न तयार करा","AI से 5 नए प्रश्न बनाएँ"], pqGen:["Writing questions…","प्रश्न तयार होत आहेत…","प्रश्न बन रहे हैं…"],
+ correct:["Correct","बरोबर","सही"], wrong:["Not quite","चुकले","सही नहीं"],
+ pqNone:["No demo questions for this skill yet.","या कौशल्यासाठी अजून डेमो प्रश्न नाहीत.","इस कौशल के लिए अभी डेमो प्रश्न नहीं हैं।"],
+ pqLangNote:["The demo question bank is in English; AI-generated questions follow your language.","डेमो प्रश्नसंच इंग्रजीत आहे; AI प्रश्न तुमच्या भाषेत येतात.","डेमो प्रश्न बैंक अंग्रेज़ी में है; AI प्रश्न आपकी भाषा में आते हैं।"],
+ pqQ:["Question {a} of {b}","प्रश्न {a} / {b}","प्रश्न {a} / {b}"], pqQs:["{x} questions","{x} प्रश्न","{x} प्रश्न"],
+ pqTestNow:["Take the verified {x} test","{x} ची पडताळणी चाचणी द्या","{x} की सत्यापित परीक्षा दें"],
+ pqAiErr:["AI questions aren't available right now; keep practising with the demo bank.","AI प्रश्न आत्ता उपलब्ध नाहीत; डेमो प्रश्नसंचाने सराव सुरू ठेवा.","AI प्रश्न अभी उपलब्ध नहीं; डेमो प्रश्नों से अभ्यास जारी रखें।"],
+ // interview
+ ivPage:["Rehearse a real interview for your goal. Answer in your own words and get feedback after every answer.","तुमच्या ध्येयासाठी खऱ्या मुलाखतीचा सराव करा. स्वतःच्या शब्दांत उत्तर द्या व प्रत्येक उत्तरानंतर अभिप्राय मिळवा.","अपने लक्ष्य के लिए असली इंटरव्यू का अभ्यास करें। अपने शब्दों में उत्तर दें और हर उत्तर के बाद प्रतिक्रिया पाएँ।"],
+ ivType:["Interview type","मुलाखतीचा प्रकार","इंटरव्यू का प्रकार"], ivLang:["Language","भाषा","भाषा"],
+ ivTypes:{hr:["HR / behavioural","HR / वर्तणूक","HR / व्यवहार"],tech:["Technical","तांत्रिक","तकनीकी"],mixed:["Mixed","मिश्र","मिश्रित"]},
+ ivStart:["Start interview","मुलाखत सुरू करा","इंटरव्यू शुरू करें"], ivSend:["Send answer","उत्तर पाठवा","उत्तर भेजें"], ivEnd:["End interview","मुलाखत संपवा","इंटरव्यू समाप्त करें"],
+ ivPh:["Type your answer. Use an example: what happened, what you did, and the result.","तुमचे उत्तर लिहा. उदाहरण द्या: काय घडले, तुम्ही काय केले, परिणाम काय.","अपना उत्तर लिखें। उदाहरण दें: क्या हुआ, आपने क्या किया, और नतीजा।"],
+ ivInterviewer:["Interviewer","मुलाखतकार","इंटरव्यूअर"], ivThinking:["Interviewer is thinking…","मुलाखतकार विचार करत आहे…","इंटरव्यूअर सोच रहा है…"],
+ ivReport:["Interview report","मुलाखत अहवाल","इंटरव्यू रिपोर्ट"], ivOverall:["Overall","एकूण","कुल"], ivStrengths:["Strengths","बलस्थाने","ताकत"], ivImprove:["To improve","सुधारणा","सुधार"],
+ ivAgain:["New interview","नवी मुलाखत","नया इंटरव्यू"], ivGood:["Good","चांगले","अच्छा"], ivTip:["Tip","टीप","सुझाव"], ivQn:["Question {a} of {b}","प्रश्न {a} / {b}","प्रश्न {a} / {b}"],
+ ivErr:["The AI interviewer couldn't respond, so this interview continues in practice mode.","AI मुलाखतकार प्रतिसाद देऊ शकला नाही, म्हणून ही मुलाखत सराव मोडमध्ये सुरू आहे.","AI इंटरव्यूअर जवाब नहीं दे सका, इसलिए यह इंटरव्यू अभ्यास मोड में जारी है।"],
+ ivLog:["Mock interview ({x}): average {y}/5","मॉक मुलाखत ({x}): सरासरी {y}/5","मॉक इंटरव्यू ({x}): औसत {y}/5"],
+ ivRole:["Role: {x}","भूमिका: {x}","भूमिका: {x}"],
+ gq1:["Tell me about yourself, and why you want to work as a {c}.","स्वतःबद्दल सांगा, आणि तुम्हाला {c} म्हणून का काम करायचे आहे?","अपने बारे में बताइए, और आप {c} के रूप में क्यों काम करना चाहते हैं?"],
+ gq2:["Describe a time you solved a difficult problem. What did you do, and what was the result?","एखादी अवघड समस्या तुम्ही सोडवली तो प्रसंग सांगा. तुम्ही काय केले आणि परिणाम काय झाला?","कोई कठिन समस्या हल करने का प्रसंग बताइए। आपने क्या किया और नतीजा क्या रहा?"],
+ gq3:["Tell me about a time you worked in a team. What was your role?","तुम्ही संघात काम केले तो प्रसंग सांगा. तुमची भूमिका काय होती?","किसी टीम में काम करने का प्रसंग बताइए। आपकी भूमिका क्या थी?"],
+ gq4:["Where do you see yourself in two years, and how will you get there?","दोन वर्षांनी तुम्ही स्वतःला कुठे पाहता, आणि तिथे कसे पोहोचाल?","दो साल बाद आप खुद को कहाँ देखते हैं, और वहाँ कैसे पहुँचेंगे?"],
+ tq1:["How would you use {s} in your first month as a {c}? Give an example.","{c} म्हणून पहिल्या महिन्यात तुम्ही {s} कसे वापराल? उदाहरण द्या.","{c} के रूप में पहले महीने में आप {s} का उपयोग कैसे करेंगे? उदाहरण दें।"],
+ tq2:["Tell me about a task or project where you used {s}. What would you do differently next time?","तुम्ही {s} वापरले असे एखादे काम किंवा प्रकल्प सांगा. पुढच्या वेळी काय वेगळे कराल?","कोई काम या प्रोजेक्ट बताइए जिसमें आपने {s} का उपयोग किया। अगली बार क्या अलग करेंगे?"],
+ tq3:["Explain {s} to someone with no background, in simple words.","{s} हे कोणतीही पार्श्वभूमी नसलेल्या व्यक्तीला सोप्या शब्दांत समजावून सांगा.","{s} को बिना पृष्ठभूमि वाले व्यक्ति को सरल शब्दों में समझाइए।"],
+ fbShort:["Add more detail — aim for four to six sentences.","अधिक तपशील द्या — चार ते सहा वाक्ये लिहा.","और विवरण दें — चार से छह वाक्य लिखें।"],
+ fbLen:["Good length and detail.","योग्य लांबी व तपशील.","उचित लंबाई और विवरण।"],
+ fbTooLong:["Keep it focused — about one minute when spoken.","मुद्देसूद ठेवा — बोलताना साधारण एक मिनिट.","केंद्रित रखें — बोलने में लगभग एक मिनट।"],
+ fbStarYes:["You explained the result — interviewers look for that.","तुम्ही परिणाम सांगितला — मुलाखतकार हेच पाहतात.","आपने नतीजा बताया — इंटरव्यूअर यही देखते हैं।"],
+ fbStarNo:["Use an example: the situation, what you did, and the result (with a number if you can).","उदाहरण वापरा: परिस्थिती, तुम्ही काय केले, आणि परिणाम (शक्य असल्यास आकड्यासह).","उदाहरण दें: स्थिति, आपने क्या किया, और नतीजा (हो सके तो आँकड़े के साथ)।"],
+ fbKeyYes:["You linked your answer to {x}.","तुम्ही उत्तर {x} शी जोडले.","आपने उत्तर को {x} से जोड़ा।"],
+ fbKeyNo:["Link your answer to skills the role needs, such as {x}.","भूमिकेसाठी लागणाऱ्या कौशल्यांशी उत्तर जोडा, जसे {x}.","उत्तर को भूमिका के ज़रूरी कौशलों से जोड़ें, जैसे {x}।"],
+ fbTip:["Practise aloud and keep each answer to about one minute, with one clear example.","मोठ्याने सराव करा; प्रत्येक उत्तर साधारण एक मिनिटाचे व एका स्पष्ट उदाहरणासह ठेवा.","ज़ोर से अभ्यास करें; हर उत्तर लगभग एक मिनट का और एक स्पष्ट उदाहरण के साथ रखें।"],
+ // resume
+ resPage:["Build an ATS-friendly resume from your verified skills. Edit any field; the preview updates as you type.","तुमच्या पडताळलेल्या कौशल्यांवरून ATS-अनुकूल रेझ्युमे तयार करा. कोणतेही क्षेत्र बदला; पूर्वावलोकन लगेच बदलते.","अपने सत्यापित कौशलों से ATS-अनुकूल रिज़्यूमे बनाएँ। कोई भी फ़ील्ड बदलें; पूर्वावलोकन तुरंत बदलता है।"],
+ resDetails:["Your details","तुमची माहिती","आपका विवरण"], fName:["Full name","पूर्ण नाव","पूरा नाम"], fEmail:["Email","ईमेल","ईमेल"], fPhone:["Phone","फोन","फ़ोन"], fCity:["City","शहर","शहर"],
+ fSummary:["Professional summary","व्यावसायिक सारांश","पेशेवर सारांश"], fEdu:["Education","शिक्षण","शिक्षा"],
+ fProj:["Projects (one per line)","प्रकल्प (प्रत्येक ओळीत एक)","प्रोजेक्ट (हर पंक्ति में एक)"], fExp:["Experience or training (one per line)","अनुभव किंवा प्रशिक्षण (प्रत्येक ओळीत एक)","अनुभव या प्रशिक्षण (हर पंक्ति में एक)"],
+ fAch:["Certifications and achievements (one per line)","प्रमाणपत्रे व यश (प्रत्येक ओळीत एक)","प्रमाणपत्र और उपलब्धियाँ (हर पंक्ति में एक)"],
+ resSuggest:["Write summary for me","सारांश लिहून द्या","सारांश लिख दें"], resPolish:["Polish with AI","AI ने सुधारा","AI से सुधारें"], resWorking:["Writing…","लिहित आहे…","लिख रहा है…"],
+ resPreview:["Preview","पूर्वावलोकन","पूर्वावलोकन"], resDownload:["Download (.html)","डाउनलोड (.html)","डाउनलोड (.html)"], resCopy:["Copy as text","मजकूर कॉपी करा","टेक्स्ट कॉपी करें"], resCopied:["Copied","कॉपी झाले","कॉपी हुआ"],
+ resAts:["ATS check for {x}","{x} साठी ATS तपासणी","{x} के लिए ATS जाँच"], resCoverage:["Keyword coverage","कीवर्ड व्याप्ती","कीवर्ड कवरेज"], resMissing:["Missing skills: {x}","कमी कौशल्ये: {x}","कमी कौशल: {x}"],
+ atsContact:["Email and phone included","ईमेल व फोन दिला आहे","ईमेल और फ़ोन शामिल"], atsSummary:["Summary of 25–80 words","25–80 शब्दांचा सारांश","25–80 शब्दों का सारांश"], atsProj:["At least one project","किमान एक प्रकल्प","कम से कम एक प्रोजेक्ट"], atsVer:["At least two verified skills","किमान दोन पडताळलेली कौशल्ये","कम से कम दो सत्यापित कौशल"],
+ resNote:["The resume is written in English, the usual language for applications. Self-reported skills are labelled; only verified skills show a level.","अर्जांसाठी सामान्यतः इंग्रजी वापरली जाते, म्हणून रेझ्युमे इंग्रजीत आहे. स्वतः सांगितलेली कौशल्ये तसे दाखवली जातात; फक्त पडताळलेल्या कौशल्यांना स्तर दिसतो.","आवेदन के लिए आम तौर पर अंग्रेज़ी होती है, इसलिए रिज़्यूमे अंग्रेज़ी में है। स्वयं बताए कौशल चिह्नित हैं; केवल सत्यापित कौशलों का स्तर दिखता है।"],
+ resAiNote:["AI rewrites only the facts you entered; it does not add employers, dates or certificates.","AI फक्त तुम्ही दिलेली माहिती पुन्हा लिहितो; नवे नियोक्ते, तारखा किंवा प्रमाणपत्रे जोडत नाही.","AI केवल आपकी दी गई जानकारी दोबारा लिखता है; नए नियोक्ता, तारीखें या प्रमाणपत्र नहीं जोड़ता।"],
+ resDlNote:["Open the file in a browser or Word, then save or print it as PDF.","फाइल ब्राउझर किंवा Word मध्ये उघडा, नंतर PDF म्हणून सेव्ह किंवा प्रिंट करा.","फ़ाइल ब्राउज़र या Word में खोलें, फिर PDF के रूप में सेव या प्रिंट करें।"],
+ resDlUnavail:["Download isn't available in this view — use Copy as text.","या दृश्यात डाउनलोड उपलब्ध नाही — मजकूर कॉपी करा वापरा.","इस दृश्य में डाउनलोड उपलब्ध नहीं — टेक्स्ट कॉपी करें का उपयोग करें।"],
+ resAiErr:["AI isn't available right now; your text is unchanged.","AI आत्ता उपलब्ध नाही; तुमचा मजकूर बदललेला नाही.","AI अभी उपलब्ध नहीं; आपका टेक्स्ट नहीं बदला।"],
+ resSaved:["Resume saved","रेझ्युमे सेव्ह झाला","रिज़्यूमे सेव हुआ"]
+});
+ICONS.practice='<path d="M4 4h16v4H4zm0 6h10v4H4zm0 6h16v4H4z"/>';
+ICONS.interview='<path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-3.1A7 7 0 0019 11z"/>';
+ICONS.resume='<path d="M6 2h9l5 5v15H6zm8 1v5h5M9 12h8v2H9zm0 4h8v2H9z"/>';
+PAGES.splice(PAGES.indexOf('evidence'),0,'practice','interview','resume');
+
+// ---------- question bank (English) : [question, options, answer index, why] ----------
+const QB = {
+ SQL:[["Which SQL clause filters groups after GROUP BY?",["WHERE","HAVING","ORDER BY","LIMIT"],1,"HAVING filters groups after grouping; WHERE filters rows before grouping."],
+  ["Which join returns all rows from the left table and only matching rows from the right?",["INNER JOIN","LEFT JOIN","RIGHT JOIN","CROSS JOIN"],1,"A LEFT JOIN keeps every left-table row and fills unmatched right-side columns with NULL."],
+  ["A table has 5 rows; one row has NULL in every column. What does COUNT(*) return?",["4","5","0","An error"],1,"COUNT(*) counts rows, whatever their values; COUNT(column) skips NULLs."],
+  ["Which keyword removes duplicate rows from a result?",["UNIQUE","DISTINCT","DIFFERENT","GROUP"],1,"SELECT DISTINCT returns each distinct row once."]],
+ EXCEL:[["Which function finds a value in the first column of a range and returns a value from another column?",["VLOOKUP","SUMIF","CONCAT","LEN"],0,"VLOOKUP searches the first column and returns from the column number you give (XLOOKUP is the newer option)."],
+  ["You copy =A1*$B$1 down one row. What happens to $B$1?",["It becomes $B$2","It stays $B$1","It becomes $C$1","It shows an error"],1,"Dollar signs make an absolute reference, so it does not change when copied."],
+  ["Which feature summarises large data by category with drag and drop?",["Pivot Table","Freeze Panes","Flash Fill","Data Validation"],0,"A Pivot Table groups and summarises data without formulas."],
+  ["What does =SUMIF(A:A,\"Pune\",B:B) do?",["Adds column B where column A is Pune","Counts cells with Pune","Adds column A","Averages column B"],0,"SUMIF adds the sum range where the criteria range matches."]],
+ STATS:[["What is the mean of 2, 4, 6, 8 and 100?",["24","6","5","20"],0,"(2+4+6+8+100)/5 = 24. One outlier pulls the mean up; the median here is 6."],
+  ["What is the median of 3, 9, 1, 7, 5?",["5","7","9","3"],0,"Sorted: 1, 3, 5, 7, 9 — the middle value is 5."],
+  ["Study hours and marks have a correlation of +0.9. What does this mean?",["A strong positive relationship","More study definitely causes higher marks","No relationship","A strong negative relationship"],0,"Correlation shows the two move together; it does not prove cause."]],
+ PY:[["What is len([1, 2, [3, 4]])?",["3","4","2","An error"],0,"The list has three items; the inner list counts as one item."],
+  ["Which pandas method shows the first five rows?",["df.head()","df.top()","df.first()","df.show()"],0,"head() returns the first n rows, five by default."],
+  ["Which pandas method removes rows with missing values?",["df.dropna()","df.fillna()","df.isnull()","df.drop_duplicates()"],0,"dropna() drops rows (or columns) that contain missing values."]],
+ PBI:[["Which language is used to write measures in Power BI?",["DAX","VBA","SQL only","HTML"],0,"Measures and calculated columns use DAX; Power Query uses M."],
+  ["Which visual best shows a sales trend over 12 months?",["Line chart","Pie chart","Card","Gauge"],0,"A line chart shows change over time most clearly."],
+  ["What is a star schema?",["A fact table linked to dimension tables","One flat table","Only dimension tables","Tables with no relationships"],0,"A central fact table holds measures; dimension tables describe them."]],
+ CLEAN:[["The same customer appears twice with different spellings. What is the best first step?",["Standardise the text, then remove duplicates","Delete both rows","Ignore it","Average the two rows"],0,"Standardise first so true duplicates can be matched and removed."],
+  ["A date column has both 12/05/2026 and 2026-05-12. What is the problem?",["Inconsistent date formats","Missing values","Outliers","Duplicate rows"],0,"Mixed formats can be misread; convert all dates to one format."]],
+ COMM:[["How should a work email to a manager begin?",["With its purpose in the first line","With a long background story","With a joke","With no subject line"],0,"Busy readers need the purpose first."],
+  ["What does active listening involve?",["Summarising what you heard before replying","Interrupting with solutions","Checking your phone","Changing the topic"],0,"Summarising shows you understood and avoids mistakes."]],
+ BIZ:[["Revenue is ₹5 lakh and total cost is ₹3.5 lakh. What is the profit?",["₹1.5 lakh","₹8.5 lakh","₹3.5 lakh","₹5 lakh"],0,"Profit = revenue − cost."]],
+ GIT:[["Which command records staged changes in the repository history?",["git commit","git push","git clone","git status"],0,"commit saves a snapshot locally; push sends commits to a remote."]],
+ WEB:[["Which HTTP method is normally used to read data without changing it?",["GET","POST","DELETE","PATCH"],0,"GET retrieves data; POST, PATCH and DELETE change data."]],
+ DSA:[["Which data structure works on Last-In-First-Out?",["Stack","Queue","Tree","Graph"],0,"A stack removes the most recently added item first."]],
+ DMK:[["What does CTR stand for in digital marketing?",["Click-through rate","Cost to reach","Customer trust ratio","Content time ratio"],0,"CTR = clicks ÷ impressions."],
+  ["An ad is shown 10,000 times and gets 200 clicks. What is the CTR?",["2%","20%","0.2%","5%"],0,"200 ÷ 10,000 = 0.02 = 2%."],
+  ["What is the main aim of SEO?",["Improve unpaid ranking in search results","Buy search ads","Send bulk SMS","Design logos"],0,"SEO improves organic (unpaid) visibility."]],
+ CONTENT:[["What makes a strong social media post?",["A short message with one clear call to action","Long paragraphs","Only hashtags","All capital letters"],0,"Short, clear posts with one action perform best."]],
+ WANALYTICS:[["What is bounce rate on a website?",["Share of visits that leave after one page","Number of pages per visit","Time to load a page","Number of new users"],0,"A high bounce rate can mean the page does not meet visitors' needs."]],
+ DESIGN:[["Which colour model is used for printing?",["CMYK","RGB","HEX","HSL"],0,"Printers mix cyan, magenta, yellow and black ink; screens use RGB."],
+  ["What does visual hierarchy mean?",["Showing what matters most first through size, weight and placement","Using many fonts","Filling all empty space","Centring everything"],0,"Hierarchy guides the eye to the most important information."]],
+ GDTOOLS:[["Which image type stays sharp at any size?",["Vector","Raster","JPEG","Screenshot"],0,"Vectors are drawn from shapes and scale without losing quality."]],
+ ESAFETY:[["What is the first step before working on an electrical circuit?",["Switch off, lock out and test that it is dead","Wear gloves and start","Work quickly","Tell the customer only"],0,"Isolate and prove dead before touching any conductor."],
+  ["What is the purpose of an earth conductor?",["Carry fault current safely to earth to prevent shock","Increase voltage","Save energy","Reduce the bill"],0,"Earthing gives fault current a safe path and helps protective devices trip."],
+  ["Which device trips on leakage current to protect people from shock?",["RCCB (residual current device)","MCB","Rewirable fuse","Two-way switch"],0,"An RCCB senses imbalance between phase and neutral; an MCB protects against overload and short circuit."]],
+ WIRING:[["Lights and sockets in a house are connected in…",["Parallel","Series","Neither","Only in a ring"],0,"In parallel each load gets full voltage and works independently."],
+  ["In older Indian domestic wiring, which colour is commonly used for the phase conductor?",["Red (brown in the newer colour code)","Green","Yellow-green","Blue"],0,"Older practice: red phase, black neutral, green earth; newer: brown, blue, green-yellow."]],
+ TOOLS:[["Which instrument measures insulation resistance?",["Megger (insulation tester)","Ammeter","Tachometer","Wattmeter"],0,"A megger applies a high test voltage to measure insulation resistance."],
+  ["To measure current with a clamp meter, what do you clamp around?",["One conductor only","Phase and neutral together","The earth wire","The switch"],0,"Clamping both conductors cancels the magnetic fields and reads near zero."]],
+ DRAW:[["On an electrical drawing, what does a circle with a cross usually show?",["A lamp","A switch","A fuse","A socket"],0,"A circle with a cross is the standard lamp symbol."]],
+ CUST:[["A customer is upset about a delay. What should you do first?",["Listen fully and acknowledge the problem","Blame another team","Offer a discount immediately","End the call"],0,"Acknowledging the problem calms the customer before you solve it."]],
+ MEASURE:[["What is the usual least count of a metric vernier caliper?",["0.02 mm","1 mm","0.5 mm","10 mm"],0,"Common metric vernier calipers read to 0.02 mm (some to 0.05 mm)."],
+  ["Which instrument measures a shaft diameter to 0.01 mm?",["Outside micrometer","Steel rule","Measuring tape","Protractor"],0,"An outside micrometer reads to 0.01 mm."]],
+ CNCPROG:[["In G-code, what does G01 mean?",["Linear feed move","Rapid move","Clockwise arc","Dwell"],0,"G00 is rapid positioning; G01 is a straight cut at the set feed rate."],
+  ["What does M03 do?",["Starts the spindle clockwise","Turns coolant on","Ends the program","Changes the tool"],0,"M03 is spindle on clockwise; M05 stops it."]],
+ WSAFE:[["What must you do before changing a tool on a machine?",["Stop the machine and isolate the power","Slow it down","Ask a friend to watch","Remove your goggles"],0,"Never work on a machine that can start unexpectedly."],
+  ["Which protective equipment is essential for grinding?",["Safety goggles or a face shield","Sandals","Loose gloves","A cap only"],0,"Grinding throws sparks and particles towards the eyes."]],
+ BANKOPS:[["Which account suits a business with many daily transactions?",["Current account","Savings account","Fixed deposit","Recurring deposit"],0,"Current accounts allow frequent transactions and are meant for businesses."],
+  ["What is NEFT?",["An electronic funds transfer system run by RBI","A type of cheque","A loan","An insurance plan"],0,"NEFT moves money between bank accounts electronically."],
+  ["What does a bank reconciliation compare?",["The bank statement with the cash book","Two customers' accounts","Loans with deposits","Interest rates"],0,"It finds differences between the bank's record and your own."]],
+ KYC:[["What is the main purpose of KYC?",["Verify a customer's identity and address to prevent fraud and money laundering","Give loans faster","Marketing","Calculate interest"],0,"KYC confirms who the customer is."],
+  ["Which of these is an officially valid document (OVD) for KYC in India?",["Passport","College ID card","Library card","Gym membership card"],0,"OVDs include passport, driving licence, voter ID and proof of Aadhaar possession."]],
+ DIGI:[["Which is the strongest password?",["A long mix of words, numbers and symbols, different for each site","Your birth date","123456","The same password everywhere"],0,"Long, unique passwords are hardest to guess."],
+  ["What does Ctrl+Z do in most programs?",["Undo","Save","Print","Copy"],0,"Ctrl+Z undoes the last action."]],
+ HYGIENE:[["What is the most effective single way to stop infection spreading in a hospital?",["Hand hygiene","Wearing a cap","Opening windows","Using perfume"],0,"Clean hands at the right moments prevent most cross-infection."],
+  ["Where should used needles go?",["A puncture-proof sharps container","A normal dustbin","Recap and reuse","A paper bag"],0,"Sharps containers prevent needle-stick injuries."]],
+ FIRSTAID:[["What is a normal resting pulse rate for an adult?",["60–100 beats per minute","20–40","120–160","Over 200"],0,"Most adults rest at 60–100 bpm."],
+  ["What is the first aid for a minor burn?",["Cool it under clean running water for about 20 minutes","Apply ice","Apply toothpaste","Burst the blisters"],0,"Cool running water reduces damage; ice and pastes can harm the skin."]],
+ PATIENT:[["Before helping a patient move, what should you do first?",["Explain what you will do and get consent","Lift quickly","Ask them to hurry","Skip hand hygiene"],0,"Explaining and asking consent keeps the patient safe and respected."]],
+ RECORDS:[["Why must patient records be kept confidential?",["To protect patient privacy and trust","To save paper","To hide mistakes","They need not be"],0,"Health information is private and shared only with authorised staff."]],
+ AGRI:[["A soil pH of 5.0 means the soil is…",["Acidic","Neutral","Alkaline","Saline"],0,"pH below 7 is acidic; 7 is neutral."],
+  ["How does drip irrigation mainly help?",["It saves water by delivering it to the roots","It floods the field","It increases evaporation","It removes weeds"],0,"Drip irrigation puts water where the plant uses it."]],
+ AGRITECH:[["What does a soil moisture sensor help a farmer decide?",["When to irrigate","Which seed brand to buy","Market price","Labour wages"],0,"It shows when the soil is too dry, so water is used only when needed."]],
+ SALES:[["In sales, what is a lead?",["A potential customer who may be interested","A closed deal","A product","A discount"],0,"Leads are qualified and followed up to become customers."],
+  ["What is the best first step in a sales call?",["Ask questions to understand the customer's needs","List every feature","Offer the biggest discount","Talk about competitors"],0,"Understanding needs lets you offer the right solution."]],
+ NEGOT:[["What is a good first step in a negotiation?",["Understand what the other side needs","Make your final offer at once","Refuse to discuss","Hide all information"],0,"Knowing the other side's needs helps both reach a deal."]]
+};
+
+const RES_DEFAULTS = {
+ priya:{name:"Priya S.",email:"priya.sample@example.com",phone:"+91 90000 00001",city:"Nashik, Maharashtra",edu:"B.Sc. Computer Science — final year, Nashik",
+  proj:"Built an Excel sales tracker for the college canteen with monthly charts\nAnalysed a public school-enrolment dataset in Python (pandas)",exp:"Volunteer, college technical festival — managed registrations in Google Sheets",ach:""},
+ rahul:{name:"Rahul K.",email:"rahul.sample@example.com",phone:"+91 90000 00002",city:"Chandrapur, Maharashtra",edu:"ITI Electrician, Chandrapur",
+  proj:"Wired a demonstration domestic circuit board with MCB and RCCB during ITI practicals",exp:"Assisted a local electrician with house-wiring jobs during vacations",ach:""},
+ sana:{name:"Sana M.",email:"sana.sample@example.com",phone:"+91 90000 00003",city:"Thane, Maharashtra",edu:"B.Com",
+  proj:"Maintained monthly household and small-shop accounts in Excel",exp:"Accounts Assistant at a trading firm, Thane — invoices and bank reconciliation (career break since 2020)",ach:""}
+};
+const LANG_NAME = {en:"English", mr:"Marathi (मराठी)", hi:"Hindi (हिंदी)"};
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function tl(key, lang, vars){ let s=S[key][LI[lang]] ?? S[key][0]; for(const v in (vars||{})) s=s.split('{'+v+'}').join(vars[v]); return s; }
+const AI_OFF_CODES = ['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed','session_expired'];
+function aiBadge(){ return st.ai? `<span class="badge b-ver">● ${t('aiOn')}</span>` : `<span class="badge b-self">${t('aiOff')}</span>`; }
+function aiNote(){ return `<p class="note" style="margin:6px 0 0">${st.ai? t('aiOnNote') : t('aiOffNote')}</p>`; }
+function handleAiError(e){ if(e && AI_OFF_CODES.includes(e.code)) st.ai=null; }
+function factsFor(L, c, rep){
+  return `Qualification: ${QUAL[L.qual].n[0]}. Target role: ${c.n[0]}. Verified skills: ${rep.rows.filter(r=>r.v).map(r=>SK[r.k].n[0]+' (level '+r.v+'/4)').join(', ')||'none yet'}. Self-reported skills: ${rep.rows.filter(r=>!r.v&&r.s).map(r=>SK[r.k].n[0]).join(', ')||'none'}. Biggest gaps: ${learningOrder(rep,c).slice(0,3).map(r=>SK[r.k].n[0]).join(', ')||'none'}.`;
+}
+
+// ---------------- Practice questions ----------------
+function pqSkillsFor(c, rep){ return rep.rows.slice().sort((a,b)=>b.G-a.G||b.I-a.I).map(r=>r.k); }
+function pPractice(){
+  const c=goal(), rep=gapReport(st.L,c), P=st.pq;
+  let h=head(tr(S.nav.practice),t('pqPage'),`<div class="row">${aiBadge()}</div>`);
+  const skills=pqSkillsFor(c,rep);
+  h+=`<div class="pq-grid"><section class="card"><div class="card-h"><h3>${t('pqChoose')}</h3></div><div class="pq-skills">`+
+    skills.map(k=>{ const r=rep.rows.find(x=>x.k===k); const n=(QB[k]||[]).length;
+      return `<button type="button" class="pq-skill ${P&&P.skill===k?'on':''}" data-act="pq-skill" data-k="${k}"><b>${sn(k)}</b><span class="note">${r.G>0?`<span class="badge b-gap">${t('gap')} ${fmt(r.G,1)}</span>`:'<span class="badge b-ver">✓</span>'} ${t('pqQs',{x:n})}</span></button>`; }).join('')+
+    `</div><p class="note">${t('pqLangNote')}</p></section><section class="card">`;
+  if(!P){ h+=`<p class="muted">${t('pqChoose')}.</p></section></div>`; return h; }
+  h+=`<div class="card-h"><h3>${sn(P.skill)}</h3>${P.source==='ai'?'<span class="badge b-ess">AI</span>':''}</div>`;
+  if(P.gen){ h+=`<p class="muted">${t('pqGen')}</p></section></div>`; return h; }
+  if(!P.qs.length){ h+=`<p>${t('pqNone')}</p>`+(st.ai?`<button type="button" class="btn sm" data-act="pq-ai">${t('pqAI')}</button>`:'')+(P.err?`<p class="note">${P.err}</p>`:'')+`</section></div>`; return h; }
+  if(P.done){
+    const r=rep.rows.find(x=>x.k===P.skill);
+    h+=`<div class="pq-done"><div class="big">${P.score}/${P.qs.length}</div><h3>${t('pqDone')}</h3><p>${t('pqScore',{a:P.score,b:P.qs.length})}</p>
+      <div class="row"><button type="button" class="btn sm ghost" data-act="pq-retry">${t('pqRetry')}</button>
+      ${st.ai?`<button type="button" class="btn sm ghost" data-act="pq-ai">${t('pqAI')}</button>`:''}
+      ${r&&r.v<r.T?`<button type="button" class="btn sm" data-pass="${P.skill}">${t('pqTestNow',{x:sn(P.skill)})}</button>`:''}</div>${P.err?`<p class="note">${P.err}</p>`:''}</div></section></div>`;
+    return h;
+  }
+  const q=P.qs[P.i];
+  h+=`<p class="note">${t('pqQ',{a:P.i+1,b:P.qs.length})}</p><p class="pq-q">${esc(q[0])}</p><div class="pq-opts">`+
+    q[1].map((o,j)=>{ let cls=''; if(P.checked){ if(j===q[2]) cls='ok'; else if(j===P.chosen) cls='bad'; } else if(j===P.chosen) cls='sel';
+      return `<button type="button" class="pq-opt ${cls}" data-act="pq-opt" data-j="${j}" ${P.checked?'disabled':''}><span>${String.fromCharCode(65+j)}</span>${esc(o)}</button>`; }).join('')+`</div>`;
+  if(P.checked) h+=`<div class="ai" style="margin-top:10px"><span class="lab">${P.chosen===q[2]?t('correct'):t('wrong')}</span>${esc(q[3])}</div>`;
+  h+=`<div class="row" style="margin-top:12px;justify-content:flex-end">${P.checked?`<button type="button" class="btn sm" data-act="pq-next">${P.i+1<P.qs.length?t('pqNext'):t('pqDone')}</button>`:`<button type="button" class="btn sm" data-act="pq-check" ${P.chosen==null?'disabled':''}>${t('pqCheck')}</button>`}</div></section></div>`;
+  return h;
+}
+function pqStart(k, qs, source){ st.pq={skill:k, qs:qs||(QB[k]||[]).map(x=>x), i:0, chosen:null, checked:false, score:0, done:false, source:source||'bank'}; }
+async function pqGenerate(){
+  const c=goal(), rep=gapReport(st.L,c), k=st.pq.skill, r=rep.rows.find(x=>x.k===k);
+  st.pq.gen=true; st.pq.err=null; render();
+  try{
+    const out=await st.ai.json(`Write 5 multiple-choice practice questions on "${SK[k].n[0]}" for a learner preparing for an entry-level ${c.n[0]} job in India. Learner's current level: ${lvl(r?r.p:1)} (0-4 scale). Questions must be factually correct and practical. Write them in ${LANG_NAME[st.lang]}.
+Reply with only a JSON array of 5 objects: {"q": string, "options": [4 strings], "answer": index 0-3 of the correct option, "why": one-sentence explanation}.`, {cache:false});
+    const qs=(Array.isArray(out)?out:[]).filter(x=>x&&typeof x.q==='string'&&Array.isArray(x.options)&&x.options.length===4&&Number.isInteger(+x.answer)&&+x.answer>=0&&+x.answer<4)
+      .map(x=>[x.q, x.options.map(String), +x.answer, String(x.why||'')]);
+    if(qs.length){ pqStart(k, qs, 'ai'); } else { st.pq.gen=false; st.pq.err=t('pqAiErr'); }
+  }catch(e){ handleAiError(e); st.pq.gen=false; st.pq.err=t('pqAiErr'); }
+  if(st.page==='practice') render();
+}
+
+// ---------------- Mock interview ----------------
+function ivTopSkills(c){ return c.req.slice().sort((a,b)=>b[2]-a[2]).map(r=>r[0]); }
+function ivQuestions(c, type, lang){
+  const sk=ivTopSkills(c), cn=c.n[LI[lang]], s=i=>SK[sk[i%sk.length]].n[LI[lang]];
+  const G=k=>tl(k,lang,{c:cn}), T=(k,i)=>tl(k,lang,{c:cn,s:s(i)});
+  if(type==='hr') return [G('gq1'),G('gq2'),G('gq3'),G('gq4'),T('tq2',0)];
+  if(type==='tech') return [G('gq1'),T('tq1',0),T('tq3',1),T('tq2',2),G('gq2')];
+  return [G('gq1'),T('tq1',0),G('gq2'),T('tq3',1),G('gq3')];
+}
+const KW_GENERIC=new Set(['data','basics','fundamentals','skills','software','office','literacy','tools','digital','work','with','and','reading','handling','management']);
+function skillKeywords(k){ const out=new Set(); SK[k].n.forEach(n=>n.split(/[\s&/(),\-]+/).forEach(w=>{ if(!w) return; if(/^[A-Z]{2,}$/.test(w) || (w.length>=4 && !KW_GENERIC.has(w.toLowerCase()))) out.add(w.toLowerCase()); })); return [...out]; }
+function ruleFeedback(ans, c, lang){
+  const words=(ans.trim().match(/\S+/g)||[]).length, low=ans.toLowerCase();
+  const star=/(result|outcome|so that|because|learn|improv|increas|reduc|saved|%|\d|परिणाम|कारण|शिकलो|शिकले|सुधार|वाढ|कमी|नतीजा|सीखा|बढ़|घट)/i.test(ans);
+  const kws=[]; c.req.forEach(([k])=>skillKeywords(k).forEach(w=>kws.push([k,w])));
+  const hit=[...new Set(kws.filter(([k,w])=>low.includes(w)).map(([k])=>k))];
+  let score=1; if(words>=25) score++; if(words>=50 && words<=260) score++; if(star) score++; if(hit.length) score++;
+  score=Math.min(5,score);
+  const good=[], imp=[];
+  if(words<25) imp.push(tl('fbShort',lang)); else if(words>260) imp.push(tl('fbTooLong',lang)); else good.push(tl('fbLen',lang));
+  if(star) good.push(tl('fbStarYes',lang)); else imp.push(tl('fbStarNo',lang));
+  if(hit.length) good.push(tl('fbKeyYes',lang,{x:hit.map(k=>SK[k].n[LI[lang]]).join(', ')}));
+  else imp.push(tl('fbKeyNo',lang,{x:ivTopSkills(c).slice(0,2).map(k=>SK[k].n[LI[lang]]).join(', ')}));
+  return {score, good:good.join(' '), improve:imp.join(' ')};
+}
+function ivRules(c, L, rep, lang, type, N){
+  return `You are a friendly, professional interviewer hiring for an entry-level ${c.n[0]} role in India. Interview type: ${type==='hr'?'HR / behavioural':type==='tech'?'technical (practical, role-specific)':'mixed HR and technical'}.
+Conduct the whole interview in ${LANG_NAME[lang]}, in simple words suitable for a first-generation learner.
+Candidate background (facts only): ${factsFor(L,c,rep)}
+Rules: ask exactly ONE question at a time, under 40 words; ask ${N} questions in total; adapt follow-ups to the candidate's answers and gaps; after each answer give fair, specific, kind feedback. Never promise a job or comment on caste, religion, gender or family.
+Reply with ONLY a JSON object: {"feedback": null or {"score": 1-5, "good": "one sentence", "improve": "one sentence"}, "question": "your next question, or empty string when the interview is over", "done": true or false, "report": null or {"overall": 1-5, "strengths": ["two short items"], "improve": ["two short items"], "tip": "one sentence"}}.
+For your first message feedback is null. After the candidate's answer to question ${N}, give feedback, set "done": true, "question": "" and fill "report".`;
+}
+function ivReset(){ const c=goal(); st.iv={type:(st.iv&&st.iv.type)||'mixed', lang:(st.iv&&st.iv.lang)||st.lang, active:false, msgs:[], turns:[], qs:[], qi:0, N:5, busy:false, done:false, report:null, mode:null, draft:'', err:null}; }
+function pInterview(){
+  const c=goal(); if(!st.iv) ivReset(); const V=st.iv;
+  let h=head(tr(S.nav.interview),t('ivPage'),`<div class="row">${aiBadge()}</div>`);
+  if(!V.active && !V.done){
+    h+=`<section class="card iv-setup"><div class="kv"><div><b>${t('ivRole',{x:''}).replace(/[:：]\s*$/,'')}</b>${tr(c.n)}</div>
+      <div><label for="iv-type"><b>${t('ivType')}</b></label><select id="iv-type">${['mixed','hr','tech'].map(x=>`<option value="${x}" ${V.type===x?'selected':''}>${tr(S.ivTypes[x])}</option>`).join('')}</select></div>
+      <div><label for="iv-lang"><b>${t('ivLang')}</b></label><select id="iv-lang">${['en','mr','hi'].map(x=>`<option value="${x}" ${V.lang===x?'selected':''}>${LANG_NAME[x]}</option>`).join('')}</select></div>
+      <div><b>${t('pqQs',{x:V.N})}</b>~10 min</div></div>${aiNote()}
+      <div class="row" style="margin-top:12px"><button type="button" class="btn" data-act="iv-start">${t('ivStart')}</button></div></section>`;
+    return h;
+  }
+  const qNum=V.msgs.filter(m=>m.who==='ai').length;
+  h+=`<section class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="note">${tr(c.n)} · ${tr(S.ivTypes[V.type])} · ${LANG_NAME[V.lang]} · ${V.mode==='ai'?t('aiOn'):t('aiOff')}</span>
+     ${!V.done?`<span class="badge b-ess">${t('ivQn',{a:Math.min(qNum,V.N),b:V.N})}</span>`:''}</div><div class="chat" id="iv-chat">`;
+  V.msgs.forEach(m=>{
+    if(m.who==='ai') h+=`<div class="msg a"><span class="lab">${t('ivInterviewer')}</span>${esc(m.text)}</div>`;
+    else { h+=`<div class="msg u">${esc(m.text)}</div>`;
+      if(m.fb) h+=`<div class="fb"><span class="stars" aria-label="${m.fb.score}/5">${'★'.repeat(m.fb.score)}${'☆'.repeat(5-m.fb.score)}</span> <b>${m.fb.score}/5</b>
+        ${m.fb.good?`<div><span class="badge b-ver">${t('ivGood')}</span> ${esc(m.fb.good)}</div>`:''}${m.fb.improve?`<div><span class="badge b-gap">${t('ivImprove')}</span> ${esc(m.fb.improve)}</div>`:''}</div>`; }
+  });
+  if(V.busy) h+=`<div class="msg a muted">${t('ivThinking')}</div>`;
+  h+=`</div>`;
+  if(V.err) h+=`<p class="note">${V.err}</p>`;
+  if(!V.done) h+=`<div class="iv-input"><label for="iv-answer" class="note">${t('ivPh')}</label><textarea id="iv-answer" rows="4" ${V.busy?'disabled':''}>${esc(V.draft)}</textarea>
+    <div class="row" style="justify-content:space-between"><button type="button" class="btn sm ghost" data-act="iv-end">${t('ivEnd')}</button><button type="button" class="btn sm" data-act="iv-send" ${V.busy?'disabled':''}>${t('ivSend')}</button></div></div>`;
+  h+=`</section>`;
+  if(V.done && V.report){ const R=V.report;
+    h+=`<section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('ivReport')}</h3><span class="fitnum">${fmt(R.overall,1)}<small>/5 ${t('ivOverall')}</small></span></div>
+      <div class="two"><div><b>${t('ivStrengths')}</b><ul>${(R.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div><div><b>${t('ivImprove')}</b><ul>${(R.improve||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>
+      ${R.tip?`<div class="ai"><span class="lab">${t('ivTip')}</span>${esc(R.tip)}</div>`:''}
+      <div class="row" style="margin-top:12px"><button type="button" class="btn sm" data-act="iv-new">${t('ivAgain')}</button><button type="button" class="btn sm ghost" data-page="practice">${tr(S.nav.practice)}</button></div></section>`; }
+  return h;
+}
+function ivRuleReport(V){
+  const fbs=V.msgs.filter(m=>m.fb).map(m=>m.fb); const avg=fbs.length?fbs.reduce((a,f)=>a+f.score,0)/fbs.length:0;
+  const goods=[...new Set(fbs.map(f=>f.good).filter(Boolean).join(' ').split(/(?<=[.।])\s+/).filter(Boolean))].slice(0,2);
+  const imps=[...new Set(fbs.map(f=>f.improve).filter(Boolean).join(' ').split(/(?<=[.।])\s+/).filter(Boolean))].slice(0,2);
+  return {overall:avg, strengths:goods, improve:imps, tip:tl('fbTip',V.lang)};
+}
+function ivFinish(V){
+  V.done=true; V.busy=false;
+  const fbs=V.msgs.filter(m=>m.fb); if(!V.report) V.report=ivRuleReport(V);
+  if(fbs.length){ const avg=fbs.reduce((a,m)=>a+m.fb.score,0)/fbs.length; st.log.unshift(t('ivLog',{x:tr(goal().n),y:fmt(avg,1)})); }
+}
+async function ivAsk(){
+  const V=st.iv; V.busy=true; render(); ivScroll();
+  try{
+    const out=await st.ai.json(V.turns, {cache:false});
+    if(!out || typeof out!=='object') throw {code:'invalid_json'};
+    V.turns.push({role:'assistant', content:JSON.stringify(out)});
+    const lastMe=[...V.msgs].reverse().find(m=>m.who==='me');
+    if(out.feedback && lastMe && !lastMe.fb){ const f=out.feedback; lastMe.fb={score:Math.max(1,Math.min(5,Math.round(+f.score||3))), good:String(f.good||''), improve:String(f.improve||'')}; }
+    const answered=V.msgs.filter(m=>m.who==='me').length;
+    if(out.done || answered>=V.N){ if(out.report) V.report={overall:+out.report.overall||0, strengths:(out.report.strengths||[]).map(String), improve:(out.report.improve||[]).map(String), tip:String(out.report.tip||'')}; ivFinish(V); }
+    else if(out.question){ V.msgs.push({who:'ai', text:String(out.question)}); V.busy=false; }
+    else throw {code:'invalid_json'};
+  }catch(e){
+    handleAiError(e); V.err=t('ivErr'); V.mode='rule'; V.busy=false;
+    const c=goal(); V.qs=ivQuestions(c,V.type,V.lang);
+    const lastMe=[...V.msgs].reverse().find(m=>m.who==='me');
+    if(lastMe && !lastMe.fb) lastMe.fb=ruleFeedback(lastMe.text,c,V.lang);
+    const asked=V.msgs.filter(m=>m.who==='ai').length;
+    if(asked>=V.N && lastMe) ivFinish(V); else { V.qi=asked; V.msgs.push({who:'ai', text:V.qs[V.qi]}); V.qi++; }
+  }
+  if(st.page==='interview'){ render(); ivScroll(); }
+}
+function ivScroll(){ const el=document.getElementById('iv-answer'); if(el && !st.iv.busy) el.focus({preventScroll:true}); const ch=document.getElementById('iv-chat'); if(ch && ch.lastElementChild) ch.lastElementChild.scrollIntoView({block:'nearest'}); }
+function ivStart(){
+  const c=goal(), rep=gapReport(st.L,c), V=st.iv;
+  V.active=true; V.msgs=[]; V.done=false; V.report=null; V.err=null; V.draft='';
+  if(st.ai){ V.mode='ai'; V.turns=[{role:'user', content:ivRules(c,st.L,rep,V.lang,V.type,V.N)+'\n\nStart the interview now with your first question.'}]; ivAsk(); }
+  else { V.mode='rule'; V.qs=ivQuestions(c,V.type,V.lang); V.qi=0; V.msgs.push({who:'ai', text:V.qs[0]}); V.qi=1; render(); ivScroll(); }
+}
+function ivSend(){
+  const V=st.iv, el=document.getElementById('iv-answer'); const ans=(el?el.value:V.draft).trim(); if(!ans || V.busy) return;
+  V.msgs.push({who:'me', text:ans}); V.draft='';
+  if(V.mode==='ai'){ V.turns.push({role:'user', content:'Candidate answer: '+ans}); ivAsk(); return; }
+  const c=goal(); V.msgs[V.msgs.length-1].fb=ruleFeedback(ans,c,V.lang);
+  if(V.qi<V.N){ V.msgs.push({who:'ai', text:V.qs[V.qi]}); V.qi++; } else ivFinish(V);
+  render(); ivScroll();
+}
+
+// ---------------- Resume builder ----------------
+function resState(){
+  st.resBy=st.resBy||{};
+  if(!st.resBy[st.who]){ const d=RES_DEFAULTS[st.who]||{name:'',email:'',phone:'',city:'',edu:QUAL[st.L.qual].n[0],proj:'',exp:'',ach:''};
+    st.resBy[st.who]=Object.assign({summary:''}, d); st.resBy[st.who].summary=templateSummary(); }
+  return st.resBy[st.who];
+}
+function templateSummary(){
+  const c=goal(), rep=gapReport(st.L,c), ord=learningOrder(rep,c);
+  const ver=rep.rows.filter(r=>r.v).sort((a,b)=>b.v-a.v).slice(0,3).map(r=>`${SK[r.k].n[0]} (${LEVELS[r.v][0].toLowerCase()})`);
+  return `Motivated ${QUAL[st.L.qual].n[0]} candidate seeking an entry-level ${c.n[0]} role. `+
+    (ver.length?`Verified skills: ${ver.join(', ')}. `:'')+
+    (ord.length?`Currently strengthening ${ord.slice(0,2).map(r=>SK[r.k].n[0]).join(' and ')} through a structured learning plan. `:'')+
+    `Reliable, eager to learn and comfortable working in a team.`;
+}
+function lines(s){ return String(s||'').split('\n').map(x=>x.trim()).filter(Boolean); }
+function resModel(){
+  const R=resState(), c=goal(), rep=gapReport(st.L,c);
+  const all=Object.keys(st.L.skills).map(k=>{ const e=st.L.skills[k]; return {k, v:e.v||0, s:e.s||0, src:e.src}; });
+  const ver=all.filter(x=>x.v>0).sort((a,b)=>b.v-a.v), fam=all.filter(x=>!x.v && x.s>0);
+  const proj=lines(R.proj); if(st.log.some(x=>x.indexOf(tr(SRC.project))>=0)) proj.push(`Capstone: ${c.cap[0]} (reviewed against a rubric)`);
+  return {R, c, rep, ver, fam, proj, exp:lines(R.exp), ach:lines(R.ach)};
+}
+function resBody(M){
+  const R=M.R, sec=(t2,inner)=>inner?`<h2>${t2}</h2>${inner}`:'', ul=a=>a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+  const contact=[R.city,R.email,R.phone].filter(Boolean).map(esc).join(' · ');
+  const skills=(M.ver.length?`<li><b>Verified:</b> ${M.ver.map(x=>`${esc(SK[x.k].n[0])} — ${LEVELS[x.v][0]} (${SRC[x.src]?SRC[x.src][0].toLowerCase():'test'})`).join('; ')}</li>`:'')+
+    (M.fam.length?`<li><b>Also familiar with (self-reported):</b> ${M.fam.map(x=>esc(SK[x.k].n[0])).join(', ')}</li>`:'');
+  return `<h1>${esc(R.name||'Your name')}</h1><div class="cv-c">${contact}</div><div class="cv-r">Target role: ${esc(M.c.n[0])}</div>`+
+    sec('Professional Summary', R.summary?`<p>${esc(R.summary)}</p>`:'')+
+    sec('Skills', skills?`<ul>${skills}</ul>`:'')+
+    sec('Education', R.edu?`<p>${esc(R.edu)}</p>`:'')+
+    sec('Projects', ul(M.proj))+sec('Experience &amp; Training', ul(M.exp))+sec('Certifications &amp; Achievements', ul(M.ach))+
+    (M.ver.length?`<p class="cv-f">Skill levels verified through GYANSETU assessments (demo).</p>`:'');
+}
+function resText(M){
+  const R=M.R, out=[R.name||'', [R.city,R.email,R.phone].filter(Boolean).join(' | '), 'Target role: '+M.c.n[0], ''];
+  const add=(h2,arr)=>{ if(arr.length){ out.push(h2.toUpperCase()); arr.forEach(x=>out.push('- '+x)); out.push(''); } };
+  if(R.summary){ out.push('PROFESSIONAL SUMMARY', R.summary, ''); }
+  add('Skills', [ ...(M.ver.length?['Verified: '+M.ver.map(x=>`${SK[x.k].n[0]} — ${LEVELS[x.v][0]}`).join('; ')]:[]), ...(M.fam.length?['Also familiar with (self-reported): '+M.fam.map(x=>SK[x.k].n[0]).join(', ')]:[]) ]);
+  if(R.edu){ out.push('EDUCATION', R.edu, ''); }
+  add('Projects',M.proj); add('Experience & Training',M.exp); add('Certifications & Achievements',M.ach);
+  return out.join('\n').trim()+'\n';
+}
+function resAts(M){
+  const R=M.R, text=(resText(M)).toLowerCase();
+  const req=M.c.req.map(r=>r[0]);
+  const have=req.filter(k=>{ const e=st.L.skills[k]; if(e && (e.v||e.s)) return true; return skillKeywords(k).some(w=>text.includes(w)); });
+  const miss=req.filter(k=>!have.includes(k));
+  const sw=(R.summary.match(/\S+/g)||[]).length;
+  const checks=[[t('atsContact'), !!(R.email&&R.phone)], [t('atsSummary'), sw>=25&&sw<=80], [t('atsProj'), M.proj.length>0], [t('atsVer'), M.ver.length>=2]];
+  return {cov:Math.round(100*have.length/req.length), miss, checks};
+}
+function resRight(){
+  const M=resModel(), A=resAts(M);
+  return `<section class="card"><div class="card-h"><h3>${t('resAts',{x:tr(M.c.n)})}</h3><span class="fitnum">${A.cov}%</span></div>
+    <div class="note">${t('resCoverage')}</div><div class="meter" style="height:8px"><i style="width:${A.cov}%"></i></div>
+    ${A.miss.length?`<p class="note">${t('resMissing',{x:A.miss.map(sn).join(', ')})} · <button type="button" class="linkbtn" data-page="path">${tr(S.nav.path)}</button></p>`:''}
+    <ul class="checks-list">${A.checks.map(([l,ok])=>`<li><span class="badge ${ok?'b-ver':'b-gap'}">${ok?'✓':'!'}</span> ${l}</li>`).join('')}</ul></section>
+    <section class="card" style="margin-top:16px"><div class="card-h"><h3>${t('resPreview')}</h3><div class="row">
+      <button type="button" class="btn sm" data-act="res-dl">${t('resDownload')}</button><button type="button" class="btn sm ghost" data-act="res-copy" id="res-copy-btn">${t('resCopy')}</button></div></div>
+      <div class="cv">${resBody(M)}</div><p class="note" id="res-msg">${t('resDlNote')}</p></section>`;
+}
+function pResume(){
+  const R=resState();
+  let h=head(tr(S.nav.resume),t('resPage'),`<div class="row">${aiBadge()}</div>`);
+  const f=(id,label,val,rows)=>`<div class="fld"><label for="res-${id}">${label}</label>${rows?`<textarea id="res-${id}" rows="${rows}">${esc(val)}</textarea>`:`<input id="res-${id}" value="${esc(val)}">`}</div>`;
+  h+=`<div class="res-grid"><section class="card"><div class="card-h"><h3>${t('resDetails')}</h3></div>
+    <div class="fld2">${f('name',t('fName'),R.name)}${f('city',t('fCity'),R.city)}${f('email',t('fEmail'),R.email)}${f('phone',t('fPhone'),R.phone)}</div>
+    ${f('summary',t('fSummary'),R.summary,4)}
+    <div class="row" style="margin:-4px 0 10px"><button type="button" class="btn sm ghost" data-act="res-suggest">${t('resSuggest')}</button>${st.ai?`<button type="button" class="btn sm" data-act="res-ai" id="res-ai-btn">${t('resPolish')}</button>`:''}</div>
+    ${st.ai?`<p class="note" style="margin-top:-6px">${t('resAiNote')}</p>`:''}
+    ${f('edu',t('fEdu'),R.edu)}${f('proj',t('fProj'),R.proj,3)}${f('exp',t('fExp'),R.exp,3)}${f('ach',t('fAch'),R.ach,2)}
+    <p class="note">${t('resNote')}</p></section><div id="res-right">${resRight()}</div></div>`;
+  return h;
+}
+function resRefresh(){ const el=document.getElementById('res-right'); if(el) el.innerHTML=resRight(); }
+async function resPolish(btn){
+  const R=resState(), c=goal(), rep=gapReport(st.L,c);
+  btn.disabled=true; btn.textContent=t('resWorking');
+  try{
+    const out=await st.ai.json(`You improve entry-level resumes for job seekers in India. Use ONLY the facts below; never invent employers, dates, numbers, certificates or skills.
+Target role: ${c.n[0]}. ${factsFor(st.L,c,rep)}
+Current summary: ${R.summary}
+Projects (one per line):\n${R.proj}
+Experience (one per line):\n${R.exp}
+Reply with only JSON: {"summary": "2-3 sentences, 40-70 words, in English", "projects": ["each project rewritten as one strong action-verb line"], "experience": ["each experience line rewritten the same way"]}. Keep the same number of project and experience lines.`, {cache:false});
+    if(out && typeof out.summary==='string'){ R.summary=out.summary.trim();
+      if(Array.isArray(out.projects) && out.projects.length) R.proj=out.projects.map(String).join('\n');
+      if(Array.isArray(out.experience) && out.experience.length && R.exp.trim()) R.exp=out.experience.map(String).join('\n'); }
+    render();
+  }catch(e){ handleAiError(e); btn.disabled=false; btn.textContent=t('resPolish'); const m=document.getElementById('res-msg'); if(m) m.textContent=t('resAiErr'); if(!st.ai) render(); }
+}
+function resDocument(M){
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(M.R.name||'Resume')} – Resume</title><style>
+body{font-family:Arial,Helvetica,sans-serif;color:#111;max-width:760px;margin:36px auto;padding:0 24px;line-height:1.45;font-size:14px}
+h1{font-size:26px;margin:0}.cv-c{color:#444;margin-top:4px}.cv-r{color:#1F3A93;font-weight:bold;margin-top:4px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #999;padding-bottom:3px;margin:18px 0 6px;color:#1F3A93}
+ul{margin:4px 0;padding-left:20px}p{margin:4px 0}.cv-f{color:#666;font-size:11px;margin-top:18px}
+@media print{body{margin:0}}</style></head><body>${resBody(M)}</body></html>`;
+}
+
+// ---------------- toolkit card on dashboard ----------------
+function toolkitCard(){
+  return `<section class="card"><div class="card-h"><h3>${t('toolkit')}</h3>${aiBadge()}</div><p class="note" style="margin:-6px 0 10px">${t('toolkitSub')}</p>
+   <div class="tk">${['practice','interview','resume'].map(p=>`<button type="button" data-page="${p}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICONS[p]}</svg><span>${tr(S.nav[p])}</span></button>`).join('')}</div></section>`;
+}
+
+// ---------------- events for the toolkit ----------------
+document.addEventListener('click', async e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act;
+  if(a==='pq-skill'){ pqStart(b.dataset.k); render(); }
+  else if(a==='pq-opt'){ st.pq.chosen=+b.dataset.j; render(); }
+  else if(a==='pq-check'){ const q=st.pq.qs[st.pq.i]; st.pq.checked=true; if(st.pq.chosen===q[2]) st.pq.score++; render(); }
+  else if(a==='pq-next'){ if(st.pq.i+1<st.pq.qs.length){ st.pq.i++; st.pq.chosen=null; st.pq.checked=false; } else { st.pq.done=true; st.log.unshift(`${sn(st.pq.skill)}: ${t('pqScore',{a:st.pq.score,b:st.pq.qs.length})}`); } render(); }
+  else if(a==='pq-retry'){ pqStart(st.pq.skill, st.pq.source==='ai'?st.pq.qs:null, st.pq.source); render(); }
+  else if(a==='pq-ai'){ if(st.ai) pqGenerate(); }
+  else if(a==='iv-start'){ st.iv.type=document.getElementById('iv-type').value; st.iv.lang=document.getElementById('iv-lang').value; ivStart(); }
+  else if(a==='iv-send'){ ivSend(); }
+  else if(a==='iv-end'){ ivFinish(st.iv); render(); }
+  else if(a==='iv-new'){ ivReset(); render(); }
+  else if(a==='res-suggest'){ resState().summary=templateSummary(); render(); }
+  else if(a==='res-ai'){ if(st.ai) resPolish(b); }
+  else if(a==='res-copy'){ const txt=resText(resModel()); try{ await navigator.clipboard.writeText(txt); b.textContent=t('resCopied'); }
+      catch(_){ const ta=document.createElement('textarea'); ta.value=txt; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); b.textContent=t('resCopied'); }catch(__){} ta.remove(); } }
+  else if(a==='res-dl'){ const M=resModel(), msg=document.getElementById('res-msg');
+      if(!st.dl){ if(msg) msg.textContent=t('resDlUnavail'); return; }
+      try{ await st.dl.save({filename:(M.R.name||'Resume').replace(/[^\w\s.-]/g,'').trim().replace(/\s+/g,'_')+'_Resume.html', data:resDocument(M)}); if(msg) msg.textContent=t('resSaved')+'. '+t('resDlNote'); }
+      catch(err){ if(msg) msg.textContent = err && err.code==='declined' ? t('resDlNote') : t('resDlUnavail'); } }
+});
+document.addEventListener('input', e=>{
+  const id=e.target.id||'';
+  if(id.startsWith('res-')){ const R=resState(); R[id.slice(4)]=e.target.value; resRefresh(); }
+  else if(id==='iv-answer'){ st.iv.draft=e.target.value; }
+});
+document.addEventListener('keydown', e=>{ if(e.target.id==='iv-answer' && e.key==='Enter' && (e.ctrlKey||e.metaKey)){ e.preventDefault(); ivSend(); } });
+
+// AI and downloads come from the viewer, when present
+(async()=>{
+  try{ if(window.claude && claude.use){ const [s,d]=await Promise.all([claude.use('sample').catch(()=>null), claude.use('downloads').catch(()=>null)]); st.ai=s||null; st.dl=d||null; if(st.ai||st.dl) render(); } }catch(_){}
+})();
+
+// ---------- render ----------
+function renderChrome(){
+  document.getElementById('tag').textContent=t('tag');
+  document.getElementById('sidefoot').textContent=t('sidefoot');
+  document.getElementById('demopill').textContent=t('demopill');
+  document.getElementById('whoLbl').textContent=t('viewing');
+  document.documentElement.lang=st.lang;
+  for(const l of ['en','mr','hi']) document.getElementById('lang-'+l).setAttribute('aria-pressed', st.lang===l);
+  const sel=document.getElementById('whoSel');
+  sel.innerHTML=Object.keys(LEARNERS).map(id=>`<option value="${id}" ${st.who===id?'selected':''}>${tr(LEARNERS[id].name)} · ${tr(LEARNERS[id].line)}</option>`).join('')+`<option value="own" ${st.who==='own'?'selected':''}>${t('own')} · ${t('ownSub')}</option>`;
+  document.getElementById('avatar').textContent = st.L? tr(st.L.name).slice(0,1) : '+';
+  document.getElementById('nav').innerHTML=PAGES.map(p=>`<button type="button" data-page="${p}" ${st.page===p?'aria-current="page"':''}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICONS[p]}</svg><span>${tr(S.nav[p])}</span></button>`).join('');
+}
+function render(){
+  renderChrome(); const v=document.getElementById('view');
+  if(st.who==='own' && !st.L){ v.innerHTML=pOwn(); return; }
+  if(st.page!=='dash' && st.page!=='careers' && st.page!=='profile' && !goal()){ v.innerHTML=head(tr(S.nav[st.page]),t('noGoal')); return; }
+  v.innerHTML={dash:pDash,careers:pCareers,gap:pGap,path:pPath,practice:pPractice,interview:pInterview,resume:pResume,evidence:pEvidence,opps:pOpps,assistant:pAssistant,profile:pProfile}[st.page]();
+  const r=document.getElementById('hpw'); if(r) r.addEventListener('change',e=>{ st.L.hpw=+e.target.value; render(); document.getElementById('hpw')?.focus(); });
+  if(r) r.addEventListener('input',e=>{ e.target.previousElementSibling.querySelector('b').textContent=e.target.value; });
+  const gs=document.getElementById('goalSel'); if(gs) gs.addEventListener('change',e=>{ st.goal[st.who]=e.target.value; st.iv=null; st.pq=null; render(); });
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.lang){ st.lang=b.dataset.lang; try{localStorage.setItem('vd-lang',st.lang)}catch(_){} render(); }
+  else if(b.dataset.page){ st.page=b.dataset.page; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(b.dataset.goal){ st.goal[st.who]=b.dataset.goal; st.iv=null; st.pq=null; render(); }
+  else if(b.dataset.showall){ st.showAll=true; render(); }
+  else if(b.dataset.ask){ const i=+b.dataset.ask; st.chat.push({u:i},{a:i}); st.page='assistant'; render(); }
+  else if(b.dataset.pass){ const k=b.dataset.pass, c=goal(), T=c.req.find(r=>r[0]===k)[1];
+    const e2=st.L.skills[k]||(st.L.skills[k]={s:0}); const before=gapReport(st.L,c).shown;
+    e2.v=Math.min(T,Math.floor(Math.max(e2.v||0,effLevel(e2)))+1); e2.src='mcq';
+    const after=gapReport(st.L,c).shown; st.log.unshift(`${sn(k)}: ${tr(SRC.mcq)} → ${lvl(e2.v)} · ${t('readiness')} ${fmt(before,1)} → ${fmt(after,1)}`); render(); }
+  else if(b.dataset.project){ const c=goal(), before=gapReport(st.L,c).shown;
+    c.req.forEach(([k,T,I])=>{ const e2=st.L.skills[k]; if(e2&&e2.v&&e2.v<T&&I>=2){ e2.v=Math.min(T,e2.v+1); e2.src='project'; } });
+    const after=gapReport(st.L,c).shown; st.log.unshift(`${t('capstone')}: ${tr(SRC.project)} · ${t('readiness')} ${fmt(before,1)} → ${fmt(after,1)}`); render(); }
+  else if(b.dataset.reset){ const g=st.goal[st.who]; loadLearner(st.who); st.goal[st.who]=g; render(); }
+});
+document.addEventListener('change',e=>{ if(e.target.id==='whoSel'){ const id=e.target.value; if(id==='own'){ st.who='own'; st.L=null; st.ownL=null; } else loadLearner(id); st.page='dash'; st.showAll=false; render(); } });
+document.addEventListener('submit',e=>{ if(e.target.id==='ownform'){ e.preventDefault(); submitOwn(e.target); } });
+try{ const l=localStorage.getItem('vd-lang'); if(l && LI[l]!==undefined) st.lang=l; }catch(_){}
+loadLearner('priya'); render();
+</script>
+
+</body>
+</html>
